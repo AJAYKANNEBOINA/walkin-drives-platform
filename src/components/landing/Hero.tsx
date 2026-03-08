@@ -61,7 +61,7 @@ const Hero = () => {
               className="mb-6 sm:mb-8 flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-3"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Link to="/signup">
+              <Link to="/drives">
                 <Button size="lg" className="w-full sm:w-auto rounded-full px-7 gap-2 font-semibold">
                   Get Started <ArrowRight className="h-4 w-4" />
                 </Button>
