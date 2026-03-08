@@ -35,7 +35,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Login</Link>
-              <Link to="/drives">
+              <Link to="/signup">
                 <Button className="rounded-full bg-mint text-mint-foreground hover:bg-mint/90 px-6 font-semibold">
                   Get Started
                 </Button>
@@ -63,7 +63,7 @@ const Navbar = () => {
                   <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full">Login</Button>
                   </Link>
-                  <Link to="/drives" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Link to="/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
                     <Button size="sm" className="w-full rounded-full bg-mint text-mint-foreground hover:bg-mint/90">Get Started</Button>
                   </Link>
                 </>

@@ -2,7 +2,6 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import StatsBar from "@/components/landing/StatsBar";
 import WalkinCards from "@/components/landing/WalkinCards";
-import LatestDrives from "@/components/landing/LatestDrives";
 import CityMap from "@/components/landing/CityMap";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Features from "@/components/landing/Features";
@@ -18,7 +17,6 @@ const Index = () => {
       <Hero />
       <StatsBar />
       <WalkinCards />
-      <LatestDrives />
       <CityMap />
       <HowItWorks />
       <Features />

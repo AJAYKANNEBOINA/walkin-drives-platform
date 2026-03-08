@@ -1,33 +1,16 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, MapPin, Clock, Briefcase, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { drives as mockDrives, formatSalary } from "@/data/mockData";
-import { Link } from "react-router-dom";
+import { drives as mockDrives } from "@/data/mockData";
 
 interface DriveCard {
   id: string;
   company: string;
-  company_initials: string | null;
   title: string;
   roles: string[] | null;
   city: string;
   date: string;
-  start_time: string | null;
-  end_time: string | null;
-  salary_min: number | null;
-  salary_max: number | null;
-  experience_min: number | null;
-  experience_max: number | null;
-  openings: number | null;
-  industry: string | null;
-  is_verified: boolean | null;
-  is_featured: boolean | null;
-  status: string | null;
-  registration_count: number | null;
-  venue_name: string | null;
 }
 
 const WalkinCards = () => {
@@ -37,7 +20,7 @@ const WalkinCards = () => {
     const fetchDrives = async () => {
       const { data } = await supabase
         .from("drives")
-        .select("id, company, company_initials, title, roles, city, date, start_time, end_time, salary_min, salary_max, experience_min, experience_max, openings, industry, is_verified, is_featured, status, registration_count, venue_name")
+        .select("id, company, title, roles, city, date")
         .eq("approval_status", "approved")
         .order("date", { ascending: true })
         .limit(6);
@@ -45,80 +28,61 @@ const WalkinCards = () => {
       if (data && data.length > 0) {
         setDrives(data);
       } else {
+        // Fallback to mock data if no approved drives yet
         setDrives(mockDrives.slice(0, 6).map((d) => ({
-          id: d.id, company: d.company, company_initials: d.companyInitials, title: d.title,
-          roles: d.roles, city: d.city, date: d.date, start_time: d.startTime, end_time: d.endTime,
-          salary_min: d.salaryMin, salary_max: d.salaryMax, experience_min: d.experienceMin,
-          experience_max: d.experienceMax, openings: d.openings, industry: d.industry,
-          is_verified: d.isVerified, is_featured: d.isFeatured, status: d.status,
-          registration_count: d.registrationCount, venue_name: d.venueName,
+          id: d.id, company: d.company, title: d.title,
+          roles: d.roles, city: d.city, date: d.date,
         })));
       }
     };
     fetchDrives();
   }, []);
 
-  const fmtSalary = (val: number | null) => {
-    if (!val) return "–";
-    if (val >= 100000) return `₹${(val / 100000).toFixed(1)}L`;
-    return `₹${(val / 1000).toFixed(0)}K`;
-  };
-
   return (
-    <section className="py-16 sm:py-20 bg-[hsl(var(--navy))]">
+    <section className="py-20">
       <div className="container">
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="mb-10 flex items-end justify-between">
           <div>
-            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--mint))]">Walk-in Opportunities</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[hsl(var(--navy-foreground))]">Today's Walk-in Drives</h2>
-            <p className="mt-1 text-sm sm:text-base text-[hsl(var(--navy-foreground))]/60">Featured drives happening now across top cities</p>
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">Walk-in Opportunities</span>
+            <h2 className="text-3xl font-extrabold text-foreground">Today's Walk-in Drives</h2>
+            <p className="mt-1 text-muted-foreground">Featured drives happening now across top cities</p>
           </div>
-          <Link to="/drives" className="hidden items-center gap-1 text-sm font-semibold text-[hsl(var(--mint))] hover:underline md:flex">
+          <a href="/drives" className="hidden items-center gap-1 text-sm font-medium text-primary hover:underline md:flex">
             View all drives <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          </a>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {drives.map((drive, i) => (
             <motion.div
               key={drive.id}
-              initial={{ opacity: 0, y: 24 }}
+              className="group relative rounded-[1.25rem] border border-border bg-card p-7 card-shadow transition-all duration-300 hover:card-shadow-hover hover:-translate-y-1"
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.07 }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
             >
-              <Link
-                to={`/drives/${drive.id}`}
-                className="group flex flex-col h-full rounded-[1.25rem] bg-white p-8 sm:p-10 shadow-lg shadow-black/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/15 hover:-translate-y-1"
+              <span className="mb-4 inline-block text-sm font-bold uppercase tracking-wide text-primary">
+                {drive.company}
+              </span>
+              <h3 className="mb-3 text-xl font-extrabold leading-tight text-foreground">
+                {drive.roles?.[0] || drive.title}
+              </h3>
+              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                {drive.roles?.join(", ")} · {drive.city} · {drive.date}
+              </p>
+              <a
+                href={`/drives/${drive.id}`}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary via-[hsl(var(--purple))] to-[hsl(var(--purple))] px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
-                {/* Company label - blue uppercase */}
-                <span className="mb-6 text-[13px] font-bold uppercase tracking-[0.18em]" style={{ color: '#2563EB' }}>
-                  {drive.company}
-                </span>
-
-                {/* Role - large bold black */}
-                <h3 className="mb-4 text-[1.75rem] sm:text-[2rem] font-extrabold leading-[1.15] tracking-[-0.01em]" style={{ color: '#0F172A' }}>
-                  {drive.roles?.[0] || drive.title}
-                </h3>
-
-                {/* Description - gray text */}
-                <p className="mb-8 text-[15px] leading-[1.7]" style={{ color: '#6B7280' }}>
-                  {drive.city} · {drive.date}{drive.start_time ? `, ${drive.start_time} – ${drive.end_time || 'TBA'}` : ""}
-                </p>
-
-                {/* Gradient CTA pill */}
-                <div className="mt-auto">
-                  <span className="inline-flex items-center rounded-full px-7 py-3 text-[15px] font-semibold text-white shadow-md shadow-[#6C3AED]/20" style={{ background: 'linear-gradient(135deg, #6C3AED 0%, #2563EB 100%)' }}>
-                    Apply Now
-                  </span>
-                </div>
-              </Link>
+                Apply Now
+              </a>
             </motion.div>
           ))}
         </div>
 
         <div className="mt-8 text-center md:hidden">
-          <Link to="/drives" className="text-sm font-semibold text-[hsl(var(--mint))] hover:underline">View all drives →</Link>
+          <a href="/drives" className="text-sm font-medium text-primary hover:underline">View all drives →</a>
         </div>
       </div>
     </section>
