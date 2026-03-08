@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Check, X, Upload, Sparkles, LogOut, ArrowLeft, Users, FileText, Mail } from "lucide-react";
+import WalkinsLogo from "@/components/WalkinsLogo";
 
 interface DriveRow {
   id: string;
@@ -216,9 +217,7 @@ const Admin = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="text-sm font-extrabold text-primary-foreground">W</span>
-              </div>
+              <WalkinsLogo className="h-8 w-auto text-foreground" compact />
               <span className="text-lg font-bold">Admin Dashboard</span>
             </div>
           </div>

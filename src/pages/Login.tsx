@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import WalkinsLogo from "@/components/WalkinsLogo";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,11 +32,8 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <span className="text-lg font-extrabold text-primary-foreground">W</span>
-            </div>
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">WALKINS</span>
+          <Link to="/" className="inline-block mb-6">
+            <WalkinsLogo className="h-12 w-auto mx-auto text-foreground" />
           </Link>
           <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
           <p className="text-muted-foreground mt-1">Sign in to your account</p>
