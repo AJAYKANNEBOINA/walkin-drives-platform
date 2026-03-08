@@ -33,48 +33,31 @@ const formatSalary = (n: number | null) => {
   return `₹${(n / 1000).toFixed(0)}K`;
 };
 
+const toMockDriveItems = (mockDrives: any[]): DriveItem[] =>
+  mockDrives.map((d) => ({
+    id: d.id, title: d.title, company: d.company,
+    company_initials: d.companyInitials, city: d.city, date: d.date,
+    roles: d.roles, salary_min: d.salaryMin, salary_max: d.salaryMax,
+    experience_min: d.experienceMin, experience_max: d.experienceMax,
+    status: d.status, is_verified: d.isVerified, openings: d.openings,
+    industry: d.industry,
+  }));
+
 const Drives = () => {
-  const [drives, setDrives] = useState<DriveItem[]>([]);
+  const [drives, setDrives] = useState<DriveItem[]>(toMockDriveItems(mockDrives));
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDrives = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("drives")
-          .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
-          .eq("approval_status", "approved")
-          .order("date", { ascending: true });
-
-        if (!error && data && data.length > 0) {
+    supabase
+      .from("drives")
+      .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
+      .eq("approval_status", "approved")
+      .order("date", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
           setDrives(data);
-        } else {
-          // Fallback to mock data
-          setDrives(mockDrives.map((d) => ({
-            id: d.id, title: d.title, company: d.company,
-            company_initials: d.companyInitials, city: d.city, date: d.date,
-            roles: d.roles, salary_min: d.salaryMin, salary_max: d.salaryMax,
-            experience_min: d.experienceMin, experience_max: d.experienceMax,
-            status: d.status, is_verified: d.isVerified, openings: d.openings,
-            industry: d.industry,
-          })));
         }
-      } catch {
-        // On any error, use mock data
-        setDrives(mockDrives.map((d) => ({
-          id: d.id, title: d.title, company: d.company,
-          company_initials: d.companyInitials, city: d.city, date: d.date,
-          roles: d.roles, salary_min: d.salaryMin, salary_max: d.salaryMax,
-          experience_min: d.experienceMin, experience_max: d.experienceMax,
-          status: d.status, is_verified: d.isVerified, openings: d.openings,
-          industry: d.industry,
-        })));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDrives();
+      });
   }, []);
 
   const filtered = drives.filter((d) => {
