@@ -89,56 +89,27 @@ const WalkinCards = () => {
             >
               <Link
                 to={`/drives/${drive.id}`}
-                className="group flex flex-col h-full rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
+                className="group flex flex-col h-full rounded-2xl border border-border bg-card p-7 sm:p-8 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
               >
-                {/* Top: Industry tag + Status */}
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
-                    {drive.industry || drive.company}
-                  </span>
-                  <div className="flex gap-1.5">
-                    {drive.status === "live" && (
-                      <Badge variant="outline" className="border-[hsl(var(--mint))]/30 bg-[hsl(var(--mint))]/10 text-[hsl(var(--mint))] text-[10px] gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--mint))] animate-pulse" /> Live
-                      </Badge>
-                    )}
-                    {drive.is_verified && (
-                      <Badge variant="outline" className="border-primary/20 bg-primary-light text-primary text-[10px]">Verified</Badge>
-                    )}
-                  </div>
-                </div>
+                {/* Category tag */}
+                <span className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                  {drive.company}
+                </span>
 
-                {/* Title */}
-                <h3 className="mb-1 text-lg sm:text-xl font-extrabold leading-tight text-foreground group-hover:text-primary transition-colors">
-                  {drive.title}
+                {/* Role / Title - large bold */}
+                <h3 className="mb-3 text-[1.65rem] sm:text-[1.85rem] font-extrabold leading-[1.15] text-foreground">
+                  {drive.roles?.[0] || drive.title}
                 </h3>
 
-                {/* Company */}
-                <p className="mb-3 text-sm font-semibold text-muted-foreground">{drive.company}</p>
+                {/* Location & date */}
+                <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                  {drive.city} · {drive.date}{drive.start_time ? ` · ${drive.start_time}` : ""}
+                </p>
 
-                {/* Roles */}
-                <div className="mb-4 flex flex-wrap gap-1.5">
-                  {drive.roles?.slice(0, 3).map(r => (
-                    <span key={r} className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-                      {r}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Details */}
-                <div className="mb-5 space-y-2 text-xs text-muted-foreground flex-1">
-                  <p className="flex items-center gap-2"><Clock className="h-3.5 w-3.5 text-primary/60" /> {drive.date} · {drive.start_time || "TBA"} – {drive.end_time || "TBA"}</p>
-                  <p className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-primary/60" /> {drive.venue_name || drive.city}</p>
-                  <p className="flex items-center gap-2"><Briefcase className="h-3.5 w-3.5 text-primary/60" /> {fmtSalary(drive.salary_min)} – {fmtSalary(drive.salary_max)} / year</p>
-                  {drive.openings && (
-                    <p className="flex items-center gap-2"><Users className="h-3.5 w-3.5 text-primary/60" /> {drive.openings} openings · {drive.registration_count || 0} RSVPs</p>
-                  )}
-                </div>
-
-                {/* CTA */}
+                {/* CTA button */}
                 <div className="mt-auto">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[hsl(var(--purple))] to-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-opacity group-hover:opacity-90">
-                    Apply Now <ArrowRight className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[hsl(var(--purple))] to-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity group-hover:opacity-90">
+                    Apply Now
                   </span>
                 </div>
               </Link>
