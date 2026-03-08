@@ -26,7 +26,6 @@ const DriveDetail = () => {
       toast.success("RSVP submitted successfully!");
     }
   };
-  const drive = drives.find(d => d.id === id);
 
   if (!drive) {
     return (
