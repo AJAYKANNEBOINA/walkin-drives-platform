@@ -5,21 +5,21 @@ import { useState } from "react";
 import indiaMap from "@/assets/india-map.png";
 
 const cities = [
-  { name: "Delhi NCR", x: 41, y: 12, jobs: 18, active: true },
-  { name: "Chandigarh", x: 37, y: 7, jobs: 5, active: false },
-  { name: "Jaipur", x: 33, y: 18, jobs: 8, active: true },
-  { name: "Lucknow", x: 50, y: 17, jobs: 6, active: false },
-  { name: "Ahmedabad", x: 24, y: 30, jobs: 10, active: true },
-  { name: "Mumbai", x: 27, y: 42, jobs: 22, active: true },
-  { name: "Pune", x: 30, y: 47, jobs: 14, active: true },
-  { name: "Hyderabad", x: 40, y: 50, jobs: 12, active: true },
-  { name: "Bengaluru", x: 36, y: 62, jobs: 36, active: true },
-  { name: "Chennai", x: 45, y: 60, jobs: 15, active: true },
-  { name: "Kolkata", x: 62, y: 30, jobs: 9, active: true },
-  { name: "Nagpur", x: 40, y: 38, jobs: 4, active: false },
-  { name: "Vizag", x: 52, y: 48, jobs: 3, active: false },
-  { name: "Kochi", x: 34, y: 72, jobs: 7, active: false },
-  { name: "Trivandrum", x: 33, y: 78, jobs: 4, active: false },
+  { name: "Delhi NCR", x: 48, y: 22, jobs: 18, active: true },
+  { name: "Chandigarh", x: 44, y: 16, jobs: 5, active: false },
+  { name: "Jaipur", x: 39, y: 28, jobs: 8, active: true },
+  { name: "Lucknow", x: 55, y: 26, jobs: 6, active: false },
+  { name: "Ahmedabad", x: 30, y: 38, jobs: 10, active: true },
+  { name: "Mumbai", x: 32, y: 52, jobs: 22, active: true },
+  { name: "Pune", x: 35, y: 56, jobs: 14, active: true },
+  { name: "Hyderabad", x: 46, y: 58, jobs: 12, active: true },
+  { name: "Bengaluru", x: 42, y: 70, jobs: 36, active: true },
+  { name: "Chennai", x: 51, y: 68, jobs: 15, active: true },
+  { name: "Kolkata", x: 67, y: 36, jobs: 9, active: true },
+  { name: "Nagpur", x: 46, y: 44, jobs: 4, active: false },
+  { name: "Vizag", x: 56, y: 54, jobs: 3, active: false },
+  { name: "Kochi", x: 38, y: 80, jobs: 7, active: false },
+  { name: "Trivandrum", x: 37, y: 85, jobs: 4, active: false },
 ];
 
 const CityMap = () => {
