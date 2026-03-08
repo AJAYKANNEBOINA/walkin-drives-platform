@@ -65,20 +65,20 @@ const WalkinCards = () => {
   };
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-16 sm:py-20 bg-[hsl(var(--navy))]">
       <div className="container">
         <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-primary">Walk-in Opportunities</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">Today's Walk-in Drives</h2>
-            <p className="mt-1 text-sm sm:text-base text-muted-foreground">Featured drives happening now across top cities</p>
+            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--mint))]">Walk-in Opportunities</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[hsl(var(--navy-foreground))]">Today's Walk-in Drives</h2>
+            <p className="mt-1 text-sm sm:text-base text-[hsl(var(--navy-foreground))]/60">Featured drives happening now across top cities</p>
           </div>
-          <Link to="/drives" className="hidden items-center gap-1 text-sm font-semibold text-primary hover:underline md:flex">
+          <Link to="/drives" className="hidden items-center gap-1 text-sm font-semibold text-[hsl(var(--mint))] hover:underline md:flex">
             View all drives <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {drives.map((drive, i) => (
             <motion.div
               key={drive.id}
@@ -89,26 +89,26 @@ const WalkinCards = () => {
             >
               <Link
                 to={`/drives/${drive.id}`}
-                className="group flex flex-col h-full rounded-2xl border border-border bg-card p-7 sm:p-8 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
+                className="group flex flex-col h-full rounded-[1.25rem] bg-white p-8 sm:p-10 shadow-lg shadow-black/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/15 hover:-translate-y-1"
               >
-                {/* Category tag */}
-                <span className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                {/* Company label - blue uppercase */}
+                <span className="mb-6 text-[13px] font-bold uppercase tracking-[0.18em]" style={{ color: '#2563EB' }}>
                   {drive.company}
                 </span>
 
-                {/* Role / Title - large bold */}
-                <h3 className="mb-3 text-[1.65rem] sm:text-[1.85rem] font-extrabold leading-[1.15] text-foreground">
+                {/* Role - large bold black */}
+                <h3 className="mb-4 text-[1.75rem] sm:text-[2rem] font-extrabold leading-[1.15] tracking-[-0.01em]" style={{ color: '#0F172A' }}>
                   {drive.roles?.[0] || drive.title}
                 </h3>
 
-                {/* Location & date */}
-                <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-                  {drive.city} · {drive.date}{drive.start_time ? ` · ${drive.start_time}` : ""}
+                {/* Description - gray text */}
+                <p className="mb-8 text-[15px] leading-[1.7]" style={{ color: '#6B7280' }}>
+                  {drive.city} · {drive.date}{drive.start_time ? `, ${drive.start_time} – ${drive.end_time || 'TBA'}` : ""}
                 </p>
 
-                {/* CTA button */}
+                {/* Gradient CTA pill */}
                 <div className="mt-auto">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[hsl(var(--purple))] to-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity group-hover:opacity-90">
+                  <span className="inline-flex items-center rounded-full px-7 py-3 text-[15px] font-semibold text-white shadow-md shadow-[#6C3AED]/20" style={{ background: 'linear-gradient(135deg, #6C3AED 0%, #2563EB 100%)' }}>
                     Apply Now
                   </span>
                 </div>
@@ -118,7 +118,7 @@ const WalkinCards = () => {
         </div>
 
         <div className="mt-8 text-center md:hidden">
-          <Link to="/drives" className="text-sm font-semibold text-primary hover:underline">View all drives →</Link>
+          <Link to="/drives" className="text-sm font-semibold text-[hsl(var(--mint))] hover:underline">View all drives →</Link>
         </div>
       </div>
     </section>
