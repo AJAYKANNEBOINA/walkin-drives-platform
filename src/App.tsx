@@ -8,6 +8,7 @@ import DriveDetail from "./pages/DriveDetail";
 import Drives from "./pages/Drives";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import PostDrive from "./pages/PostDrive";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/drives/:id" element={<DriveDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/post-drive" element={<PostDrive />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

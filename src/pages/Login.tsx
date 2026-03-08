@@ -10,6 +10,8 @@ import WalkinsLogo from "@/components/WalkinsLogo";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = window.location;
+  const state = (history.state?.usr as { redirectTo?: string }) || {};
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,7 @@ const Login = () => {
       toast.error(error.message);
     } else {
       toast.success("Logged in successfully!");
-      navigate("/");
+      navigate(state.redirectTo || "/");
     }
   };
 

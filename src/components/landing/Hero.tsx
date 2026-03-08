@@ -66,7 +66,7 @@ const Hero = () => {
                   Get Started <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link to="/signup">
+              <Link to="/post-drive">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full px-7 font-semibold gap-2">
                   <Briefcase className="h-4 w-4" /> Post a Drive Free
                 </Button>
