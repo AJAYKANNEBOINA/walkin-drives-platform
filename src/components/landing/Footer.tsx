@@ -22,7 +22,7 @@ const Footer = () => (
         <div>
           <h4 className="mb-4 text-sm font-bold text-mint">Learn more</h4>
           <ul className="space-y-3 text-sm text-[hsl(var(--navy-foreground))]/60">
-            <li><a href="/drives" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">Browse Drives</a></li>
+            <li><Link to="/drives" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">Browse Drives</Link></li>
             <li><a href="#" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">How It Works</a></li>
             <li><a href="/employers" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">For Employers</a></li>
             <li><a href="#" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">About Us</a></li>
