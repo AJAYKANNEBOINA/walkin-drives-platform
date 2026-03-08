@@ -14,16 +14,216 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      drives: {
+        Row: {
+          approval_status: string | null
+          city: string
+          company: string
+          company_about: string | null
+          company_address: string | null
+          company_initials: string | null
+          created_at: string
+          date: string
+          department: string | null
+          documents_required: string[] | null
+          education: string | null
+          eligibility: string | null
+          employment_type: string | null
+          end_time: string | null
+          experience_max: number | null
+          experience_min: number | null
+          id: string
+          industry: string | null
+          is_featured: boolean | null
+          is_verified: boolean | null
+          job_description: string | null
+          key_skills: string[] | null
+          openings: number | null
+          posted_by: string | null
+          rating: number | null
+          registration_count: number | null
+          review_count: number | null
+          roles: string[] | null
+          salary_max: number | null
+          salary_min: number | null
+          specifications: string[] | null
+          start_time: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          venue_address: string | null
+          venue_name: string | null
+        }
+        Insert: {
+          approval_status?: string | null
+          city: string
+          company: string
+          company_about?: string | null
+          company_address?: string | null
+          company_initials?: string | null
+          created_at?: string
+          date: string
+          department?: string | null
+          documents_required?: string[] | null
+          education?: string | null
+          eligibility?: string | null
+          employment_type?: string | null
+          end_time?: string | null
+          experience_max?: number | null
+          experience_min?: number | null
+          id?: string
+          industry?: string | null
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          job_description?: string | null
+          key_skills?: string[] | null
+          openings?: number | null
+          posted_by?: string | null
+          rating?: number | null
+          registration_count?: number | null
+          review_count?: number | null
+          roles?: string[] | null
+          salary_max?: number | null
+          salary_min?: number | null
+          specifications?: string[] | null
+          start_time?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
+        }
+        Update: {
+          approval_status?: string | null
+          city?: string
+          company?: string
+          company_about?: string | null
+          company_address?: string | null
+          company_initials?: string | null
+          created_at?: string
+          date?: string
+          department?: string | null
+          documents_required?: string[] | null
+          education?: string | null
+          eligibility?: string | null
+          employment_type?: string | null
+          end_time?: string | null
+          experience_max?: number | null
+          experience_min?: number | null
+          id?: string
+          industry?: string | null
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          job_description?: string | null
+          key_skills?: string[] | null
+          openings?: number | null
+          posted_by?: string | null
+          rating?: number | null
+          registration_count?: number | null
+          review_count?: number | null
+          roles?: string[] | null
+          salary_max?: number | null
+          salary_min?: number | null
+          specifications?: string[] | null
+          start_time?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
+        }
+        Relationships: []
+      }
+      email_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean | null
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean | null
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean | null
+          subscribed_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          city: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          resume_url: string | null
+          skills: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          resume_url?: string | null
+          skills?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          resume_url?: string | null
+          skills?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +350,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
