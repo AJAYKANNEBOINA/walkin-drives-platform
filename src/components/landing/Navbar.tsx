@@ -35,7 +35,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Login</Link>
-              <Link to="/signup">
+              <Link to="/drives">
                 <Button className="rounded-full bg-mint text-mint-foreground hover:bg-mint/90 px-6 font-semibold">
                   Get Started
                 </Button>
