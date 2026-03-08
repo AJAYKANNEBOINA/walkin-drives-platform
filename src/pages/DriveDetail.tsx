@@ -1,10 +1,12 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { drives, formatSalary } from "@/data/mockData";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   MapPin, Clock, Briefcase, Star, Users, Calendar,
   Share2, Navigation, CheckCircle2, AlertTriangle, ArrowRight
