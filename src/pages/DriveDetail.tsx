@@ -1,10 +1,12 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { drives, formatSalary } from "@/data/mockData";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   MapPin, Clock, Briefcase, Star, Users, Calendar,
   Share2, Navigation, CheckCircle2, AlertTriangle, ArrowRight
@@ -12,7 +14,18 @@ import {
 
 const DriveDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const drive = drives.find(d => d.id === id);
+
+  const handleApply = () => {
+    if (!user) {
+      toast.info("Please login to apply for this drive");
+      navigate("/login", { state: { redirectTo: `/drives/${id}` } });
+    } else {
+      toast.success("RSVP submitted successfully!");
+    }
+  };
 
   if (!drive) {
     return (
@@ -324,7 +337,7 @@ const DriveDetail = () => {
                   </div>
                 </div>
 
-                <Button className="w-full rounded-full font-semibold" size="lg">
+                <Button className="w-full rounded-full font-semibold" size="lg" onClick={handleApply}>
                   RSVP / Register Now
                 </Button>
                 <Button variant="outline" className="mt-2 w-full rounded-full gap-2" size="lg">
