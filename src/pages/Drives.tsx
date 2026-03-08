@@ -36,9 +36,6 @@ const formatSalary = (n: number | null) => {
 const Drives = () => {
   const [drives, setDrives] = useState<DriveItem[]>([]);
   const [search, setSearch] = useState("");
-  const [cityFilter, setCityFilter] = useState("all");
-  const [domainFilter, setDomainFilter] = useState("all");
-  const [expFilter, setExpFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
