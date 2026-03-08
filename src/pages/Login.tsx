@@ -26,7 +26,7 @@ const Login = () => {
       toast.error(error.message);
     } else {
       toast.success("Logged in successfully!");
-      navigate(state.redirectTo || "/");
+      navigate(redirectTo);
     }
   };
 
