@@ -116,57 +116,7 @@ const Drives = () => {
         </div>
       </div>
 
-      {/* Filters + Results */}
       <div className="container py-8">
-        {/* Filter Bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <Filter className="h-4 w-4" />
-            <span>Filters</span>
-          </div>
-
-          <Select value={cityFilter} onValueChange={setCityFilter}>
-            <SelectTrigger className="w-[160px] h-9 text-xs">
-              <SelectValue placeholder="City" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Cities</SelectItem>
-              {topCities.map((c) => (
-                <SelectItem key={c} value={c}>{c}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={domainFilter} onValueChange={setDomainFilter}>
-            <SelectTrigger className="w-[170px] h-9 text-xs">
-              <SelectValue placeholder="Domain" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Domains</SelectItem>
-              {domains.map((d) => (
-                <SelectItem key={d} value={d}>{d}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={expFilter} onValueChange={setExpFilter}>
-            <SelectTrigger className="w-[160px] h-9 text-xs">
-              <SelectValue placeholder="Experience" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Experience</SelectItem>
-              {experienceRanges.map((r) => (
-                <SelectItem key={r.label} value={r.label}>{r.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {activeFilters > 0 && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 text-xs gap-1 text-muted-foreground hover:text-foreground">
-              <X className="h-3 w-3" /> Clear all
-            </Button>
-          )}
-        </div>
 
         {loading ? (
           <div className="text-center py-20 text-muted-foreground">Loading drives...</div>
