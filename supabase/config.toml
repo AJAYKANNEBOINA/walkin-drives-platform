@@ -1,1 +1,4 @@
 project_id = "gliavjxehehviqwvjell"
+
+[functions.extract-drive-from-image]
+verify_jwt = false
