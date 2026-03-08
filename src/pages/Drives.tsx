@@ -44,16 +44,29 @@ const Drives = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("drives")
-        .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
-        .eq("approval_status", "approved")
-        .order("date", { ascending: true });
+    const fetchDrives = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("drives")
+          .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
+          .eq("approval_status", "approved")
+          .order("date", { ascending: true });
 
-      if (data && data.length > 0) {
-        setDrives(data);
-      } else {
+        if (!error && data && data.length > 0) {
+          setDrives(data);
+        } else {
+          // Fallback to mock data
+          setDrives(mockDrives.map((d) => ({
+            id: d.id, title: d.title, company: d.company,
+            company_initials: d.companyInitials, city: d.city, date: d.date,
+            roles: d.roles, salary_min: d.salaryMin, salary_max: d.salaryMax,
+            experience_min: d.experienceMin, experience_max: d.experienceMax,
+            status: d.status, is_verified: d.isVerified, openings: d.openings,
+            industry: d.industry,
+          })));
+        }
+      } catch {
+        // On any error, use mock data
         setDrives(mockDrives.map((d) => ({
           id: d.id, title: d.title, company: d.company,
           company_initials: d.companyInitials, city: d.city, date: d.date,
@@ -62,10 +75,11 @@ const Drives = () => {
           status: d.status, is_verified: d.isVerified, openings: d.openings,
           industry: d.industry,
         })));
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetch();
+    fetchDrives();
   }, []);
 
   const filtered = drives.filter((d) => {
