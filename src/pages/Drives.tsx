@@ -44,16 +44,29 @@ const Drives = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("drives")
-        .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
-        .eq("approval_status", "approved")
-        .order("date", { ascending: true });
+    const fetchDrives = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("drives")
+          .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
+          .eq("approval_status", "approved")
+          .order("date", { ascending: true });
 
-      if (data && data.length > 0) {
-        setDrives(data);
-      } else {
+        if (!error && data && data.length > 0) {
+          setDrives(data);
+        } else {
+          // Fallback to mock data
+          setDrives(mockDrives.map((d) => ({
+            id: d.id, title: d.title, company: d.company,
+            company_initials: d.companyInitials, city: d.city, date: d.date,
+            roles: d.roles, salary_min: d.salaryMin, salary_max: d.salaryMax,
+            experience_min: d.experienceMin, experience_max: d.experienceMax,
+            status: d.status, is_verified: d.isVerified, openings: d.openings,
+            industry: d.industry,
+          })));
+        }
+      } catch {
+        // On any error, use mock data
         setDrives(mockDrives.map((d) => ({
           id: d.id, title: d.title, company: d.company,
           company_initials: d.companyInitials, city: d.city, date: d.date,
@@ -62,10 +75,11 @@ const Drives = () => {
           status: d.status, is_verified: d.isVerified, openings: d.openings,
           industry: d.industry,
         })));
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetch();
+    fetchDrives();
   }, []);
 
   const filtered = drives.filter((d) => {
@@ -176,75 +190,78 @@ const Drives = () => {
           )}
         </div>
 
-        {/* Results count */}
-        <p className="text-sm text-muted-foreground mb-6">
-          {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
-          {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
-        </p>
-
         {loading ? (
           <div className="text-center py-20 text-muted-foreground">Loading drives...</div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground mb-4">No drives found matching your criteria</p>
-            <Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>
-          </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((drive, i) => (
-              <motion.div
-                key={drive.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
-              >
-                <Link to={`/drives/${drive.id}`} className="block group">
-                  <div className="rounded-xl border border-border bg-card p-5 card-shadow transition-all hover:card-shadow-hover hover:-translate-y-1">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light text-xs font-bold text-primary">
-                        {drive.company_initials || drive.company.substring(0, 3).toUpperCase()}
+          <>
+            <p className="text-sm text-muted-foreground mb-6">
+              {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
+              {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
+            </p>
+
+            {filtered.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-muted-foreground mb-4">No drives found matching your criteria</p>
+                <Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((drive, i) => (
+                  <motion.div
+                    key={drive.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: i * 0.03 }}
+                  >
+                    <Link to={`/drives/${drive.id}`} className="block group">
+                      <div className="rounded-xl border border-border bg-card p-5 card-shadow transition-all hover:card-shadow-hover hover:-translate-y-1">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light text-xs font-bold text-primary">
+                            {drive.company_initials || drive.company.substring(0, 3).toUpperCase()}
+                          </div>
+                          <div className="flex gap-1.5">
+                            {drive.is_verified && <Badge variant="outline" className="text-[10px] border-primary/20 text-primary">Verified</Badge>}
+                            {drive.status === "live" && <Badge variant="outline" className="text-[10px] border-[hsl(var(--mint))]/30 text-[hsl(var(--mint))]">Live</Badge>}
+                          </div>
+                        </div>
+
+                        <h3 className="font-bold text-foreground mb-1 text-sm group-hover:text-primary transition-colors">{drive.title}</h3>
+                        <p className="text-xs text-muted-foreground mb-1">{drive.company}</p>
+                        {drive.industry && (
+                          <span className="text-[10px] text-primary/80 font-medium">{drive.industry}</span>
+                        )}
+
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground mb-4 mt-3">
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {drive.city}</span>
+                          <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {drive.date}</span>
+                          {drive.openings && <span className="flex items-center gap-1"><Briefcase className="h-3 w-3" /> {drive.openings} openings</span>}
+                        </div>
+
+                        {drive.roles && drive.roles.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            {drive.roles.slice(0, 3).map((r) => (
+                              <span key={r} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{r}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between">
+                          {(drive.salary_min || drive.salary_max) ? (
+                            <span className="text-xs font-semibold text-foreground">
+                              {formatSalary(drive.salary_min)} - {formatSalary(drive.salary_max)} P.A.
+                            </span>
+                          ) : <span />}
+                          <span className="text-xs font-medium text-primary flex items-center gap-1 group-hover:underline">
+                            View <ArrowRight className="h-3 w-3" />
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex gap-1.5">
-                        {drive.is_verified && <Badge variant="outline" className="text-[10px] border-primary/20 text-primary">Verified</Badge>}
-                        {drive.status === "live" && <Badge variant="outline" className="text-[10px] border-[hsl(var(--mint))]/30 text-[hsl(var(--mint))]">Live</Badge>}
-                      </div>
-                    </div>
-
-                    <h3 className="font-bold text-foreground mb-1 text-sm group-hover:text-primary transition-colors">{drive.title}</h3>
-                    <p className="text-xs text-muted-foreground mb-1">{drive.company}</p>
-                    {drive.industry && (
-                      <span className="text-[10px] text-primary/80 font-medium">{drive.industry}</span>
-                    )}
-
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground mb-4 mt-3">
-                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {drive.city}</span>
-                      <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {drive.date}</span>
-                      {drive.openings && <span className="flex items-center gap-1"><Briefcase className="h-3 w-3" /> {drive.openings} openings</span>}
-                    </div>
-
-                    {drive.roles && drive.roles.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {drive.roles.slice(0, 3).map((r) => (
-                          <span key={r} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{r}</span>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between">
-                      {(drive.salary_min || drive.salary_max) ? (
-                        <span className="text-xs font-semibold text-foreground">
-                          {formatSalary(drive.salary_min)} - {formatSalary(drive.salary_max)} P.A.
-                        </span>
-                      ) : <span />}
-                      <span className="text-xs font-medium text-primary flex items-center gap-1 group-hover:underline">
-                        View <ArrowRight className="h-3 w-3" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
