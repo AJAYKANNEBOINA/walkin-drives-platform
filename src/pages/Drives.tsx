@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { drives as mockDrives, topCities, domains, experienceRanges } from "@/data/mockData";
+import { drives as mockDrives } from "@/data/mockData";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import { Search, MapPin, Calendar, Briefcase, ArrowRight, Filter, X } from "lucide-react";
+import { Search, MapPin, Calendar, Briefcase, ArrowRight } from "lucide-react";
 
 interface DriveItem {
   id: string;
@@ -38,9 +36,6 @@ const formatSalary = (n: number | null) => {
 const Drives = () => {
   const [drives, setDrives] = useState<DriveItem[]>([]);
   const [search, setSearch] = useState("");
-  const [cityFilter, setCityFilter] = useState("all");
-  const [domainFilter, setDomainFilter] = useState("all");
-  const [expFilter, setExpFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -84,30 +79,13 @@ const Drives = () => {
 
   const filtered = drives.filter((d) => {
     const q = search.toLowerCase();
-    const matchSearch = !search ||
+    return !search ||
       d.title.toLowerCase().includes(q) ||
       d.company.toLowerCase().includes(q) ||
       d.city.toLowerCase().includes(q) ||
       d.roles?.some((r) => r.toLowerCase().includes(q)) ||
       d.industry?.toLowerCase().includes(q);
-    const matchCity = cityFilter === "all" || d.city === cityFilter;
-    const matchDomain = domainFilter === "all" || d.industry === domainFilter;
-    const matchExp = expFilter === "all" || (() => {
-      const range = experienceRanges.find(r => r.label === expFilter);
-      if (!range) return true;
-      return (d.experience_min ?? 0) <= range.max && (d.experience_max ?? 0) >= range.min;
-    })();
-    return matchSearch && matchCity && matchDomain && matchExp;
   });
-
-  const activeFilters = [cityFilter, domainFilter, expFilter].filter(f => f !== "all").length;
-
-  const clearFilters = () => {
-    setCityFilter("all");
-    setDomainFilter("all");
-    setExpFilter("all");
-    setSearch("");
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,57 +116,7 @@ const Drives = () => {
         </div>
       </div>
 
-      {/* Filters + Results */}
       <div className="container py-8">
-        {/* Filter Bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <Filter className="h-4 w-4" />
-            <span>Filters</span>
-          </div>
-
-          <Select value={cityFilter} onValueChange={setCityFilter}>
-            <SelectTrigger className="w-[160px] h-9 text-xs">
-              <SelectValue placeholder="City" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Cities</SelectItem>
-              {topCities.map((c) => (
-                <SelectItem key={c} value={c}>{c}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={domainFilter} onValueChange={setDomainFilter}>
-            <SelectTrigger className="w-[170px] h-9 text-xs">
-              <SelectValue placeholder="Domain" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Domains</SelectItem>
-              {domains.map((d) => (
-                <SelectItem key={d} value={d}>{d}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={expFilter} onValueChange={setExpFilter}>
-            <SelectTrigger className="w-[160px] h-9 text-xs">
-              <SelectValue placeholder="Experience" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Experience</SelectItem>
-              {experienceRanges.map((r) => (
-                <SelectItem key={r.label} value={r.label}>{r.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {activeFilters > 0 && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 text-xs gap-1 text-muted-foreground hover:text-foreground">
-              <X className="h-3 w-3" /> Clear all
-            </Button>
-          )}
-        </div>
 
         {loading ? (
           <div className="text-center py-20 text-muted-foreground">Loading drives...</div>
@@ -196,13 +124,11 @@ const Drives = () => {
           <>
             <p className="text-sm text-muted-foreground mb-6">
               {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
-              {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
             </p>
 
             {filtered.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-muted-foreground mb-4">No drives found matching your criteria</p>
-                <Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>
+                <p className="text-muted-foreground mb-4">No drives found matching your search</p>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
