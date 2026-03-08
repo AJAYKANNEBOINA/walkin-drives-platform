@@ -26,7 +26,7 @@ const CityMap = () => {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <section className="relative overflow-hidden py-24 bg-navy">
+    <section className="relative overflow-hidden py-12 sm:py-16 lg:py-24 bg-navy">
       <motion.div
         className="pointer-events-none absolute left-1/4 top-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[120px]"
         animate={{ opacity: [0.1, 0.2, 0.1] }}
@@ -34,7 +34,7 @@ const CityMap = () => {
       />
 
       <div className="container relative">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1fr]">
+        <div className="grid items-center gap-8 lg:gap-12 lg:grid-cols-[1fr_1fr]">
           {/* Left - India Map Image */}
           <motion.div
             className="relative order-2 lg:order-1"
