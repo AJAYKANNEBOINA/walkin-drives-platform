@@ -10,8 +10,8 @@ import WalkinsLogo from "@/components/WalkinsLogo";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = window.location;
-  const state = (history.state?.usr as { redirectTo?: string }) || {};
+  const location = useLocation();
+  const redirectTo = (location.state as { redirectTo?: string })?.redirectTo || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
