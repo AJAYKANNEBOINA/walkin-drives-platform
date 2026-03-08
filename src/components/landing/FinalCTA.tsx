@@ -45,17 +45,17 @@ const FinalCTA = () => {
           Get instant alerts about new walk-in opportunities in your area. Join 50,000+ job seekers who never miss an opportunity.
         </p>
 
-        <div className="mx-auto mb-8 flex max-w-md overflow-hidden rounded-full bg-primary-foreground/10 p-1">
+        <div className="mx-auto mb-8 flex max-w-md flex-col sm:flex-row overflow-hidden rounded-2xl sm:rounded-full bg-primary-foreground/10 p-1 gap-1 sm:gap-0">
           <input
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-            className="flex-1 bg-transparent px-5 text-sm text-primary-foreground placeholder:text-primary-foreground/50 outline-none"
+            className="flex-1 bg-transparent px-5 py-3 sm:py-0 text-sm text-primary-foreground placeholder:text-primary-foreground/50 outline-none text-center sm:text-left"
           />
           <Button
-            className="rounded-full bg-mint text-mint-foreground hover:bg-mint/90 px-6 font-semibold"
+            className="rounded-xl sm:rounded-full bg-mint text-mint-foreground hover:bg-mint/90 px-6 py-3 font-semibold w-full sm:w-auto"
             onClick={handleSubscribe}
             disabled={loading}
           >
