@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import WalkinsLogo from "@/components/WalkinsLogo";
 
 const Login = () => {
   const navigate = useNavigate();
