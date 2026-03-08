@@ -2,7 +2,7 @@ import { ArrowRight, Briefcase, CheckCircle, Zap, ShieldCheck } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { latestDrives } from "@/data/mockData";
-import hero3dDoor from "@/assets/hero-3d-door.png";
+import heroWoman from "@/assets/hero-woman.png";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -89,7 +89,7 @@ const Hero = () => {
               className="relative z-10"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <img src={hero3dDoor} alt="3D illustration of a professional walking through a W-shaped door with a suitcase" className="relative z-10 h-auto w-full max-w-[300px] sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl" />
+              <img src={heroWoman} alt="Professional ready for walk-in interview" className="relative z-10 h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto rounded-2xl" />
               <motion.div
                 className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-br from-[hsl(var(--purple))]/40 to-primary/30 blur-[60px]"
                 animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.05, 1] }}
