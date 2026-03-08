@@ -190,14 +190,14 @@ const Drives = () => {
           )}
         </div>
 
-        {/* Results count */}
-        <p className="text-sm text-muted-foreground mb-6">
-          {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
-          {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
-        </p>
-
         {loading ? (
           <div className="text-center py-20 text-muted-foreground">Loading drives...</div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground mb-6">
+              {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
+              {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
+            </p>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-muted-foreground mb-4">No drives found matching your criteria</p>
