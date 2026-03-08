@@ -22,13 +22,6 @@ const WalkinsLogo = ({ className = "", compact = false }: { className?: string; 
           WALK
         </text>
 
-        {/* Walking legs on the L-K gap area */}
-        {/* Left leg */}
-        <path d="M200 52 L196 68" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" />
-        <ellipse cx="195" cy="70" rx="5" ry="2.5" fill="hsl(var(--primary))" />
-        {/* Right leg */}
-        <path d="M206 52 L212 68" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" />
-        <ellipse cx="213" cy="70" rx="5" ry="2.5" fill="hsl(var(--primary))" />
 
         {/* INS letters */}
         <text x="218" y="50" fontFamily="Inter, ui-sans-serif, system-ui" fontSize="38" fontWeight="900" letterSpacing="2" fill="hsl(var(--primary))">
