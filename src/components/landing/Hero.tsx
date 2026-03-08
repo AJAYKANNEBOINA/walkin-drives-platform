@@ -2,18 +2,46 @@ import { ArrowRight, Briefcase, CheckCircle, Zap, ShieldCheck } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { latestDrives } from "@/data/mockData";
+import heroWoman from "@/assets/hero-woman.png";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden py-16 lg:py-24">
-      {/* Subtle bg decoration */}
-      <div className="pointer-events-none absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-[400px] w-[400px] rounded-full bg-[hsl(var(--purple))]/5 blur-3xl" />
+    <section className="relative overflow-hidden">
+      {/* Animated glowing orbs */}
+      <motion.div
+        className="pointer-events-none absolute -right-32 top-10 h-[500px] w-[500px] rounded-full bg-[hsl(var(--purple))]/20 blur-[100px]"
+        animate={{
+          x: [0, 30, -20, 0],
+          y: [0, -40, 20, 0],
+          scale: [1, 1.15, 0.9, 1],
+          opacity: [0.2, 0.35, 0.15, 0.2],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-primary/15 blur-[100px]"
+        animate={{
+          x: [0, -20, 30, 0],
+          y: [0, 30, -20, 0],
+          scale: [1, 0.9, 1.2, 1],
+          opacity: [0.15, 0.3, 0.1, 0.15],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute left-1/3 top-1/4 h-[300px] w-[300px] rounded-full bg-[hsl(var(--mint))]/10 blur-[80px]"
+        animate={{
+          x: [0, 40, -30, 0],
+          y: [0, -30, 40, 0],
+          opacity: [0.1, 0.2, 0.05, 0.1],
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-      <div className="container relative">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="container relative py-16 lg:py-20">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
           {/* Left content */}
-          <div>
+          <div className="relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -26,7 +54,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.h1
-              className="mb-5 text-4xl font-extrabold leading-[1.1] text-foreground md:text-5xl lg:text-[3.5rem]"
+              className="mb-3 text-4xl font-extrabold leading-[1.1] text-foreground md:text-5xl lg:text-[3.5rem]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -35,8 +63,31 @@ const Hero = () => {
               <span className="text-gradient">Near You</span>
             </motion.h1>
 
+            {/* Animated tagline */}
             <motion.p
-              className="mb-8 max-w-lg text-lg leading-relaxed text-muted-foreground"
+              className="mb-5 text-xl font-bold text-foreground/80 md:text-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+            >
+              Let us make{" "}
+              <motion.span
+                className="inline-block text-gradient"
+                animate={{
+                  textShadow: [
+                    "0 0 8px hsl(217,91%,60%,0.3)",
+                    "0 0 20px hsl(217,91%,60%,0.6)",
+                    "0 0 8px hsl(217,91%,60%,0.3)",
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Your first move
+              </motion.span>
+            </motion.p>
+
+            <motion.p
+              className="mb-8 max-w-lg text-base leading-relaxed text-muted-foreground"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -71,57 +122,71 @@ const Hero = () => {
             </motion.div>
           </div>
 
-          {/* Right - Latest Jobs Widget */}
-          <motion.div
-            className="relative"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <div className="rounded-2xl border border-border bg-card card-shadow overflow-hidden">
-              {/* Widget header */}
-              <div className="flex items-center justify-between bg-gradient-to-r from-primary to-[hsl(var(--purple))] px-5 py-4">
-                <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-primary-foreground" />
-                  <div>
-                    <h3 className="text-sm font-bold text-primary-foreground">Latest Drives</h3>
-                    <p className="text-xs text-primary-foreground/70">{latestDrives.length} live</p>
-                  </div>
-                </div>
-                <span className="flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-xs font-semibold text-primary-foreground">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--mint))]" /> Live
+          {/* Right - Hero image + floating widget */}
+          <div className="relative flex items-center justify-center">
+            {/* Woman image with glow */}
+            <motion.div
+              className="relative z-10"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+              <img
+                src={heroWoman}
+                alt="Professional ready for walk-in interview"
+                className="relative z-10 h-auto w-full max-w-md mx-auto rounded-2xl"
+              />
+              {/* Glow behind image */}
+              <motion.div
+                className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-br from-[hsl(var(--purple))]/40 to-primary/30 blur-[60px]"
+                animate={{
+                  opacity: [0.4, 0.7, 0.4],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </motion.div>
+
+            {/* Floating latest drives card */}
+            <motion.div
+              className="absolute -bottom-4 -left-4 z-20 w-64 rounded-xl border border-border bg-card/95 p-3 card-shadow backdrop-blur-sm md:left-0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-bold text-foreground">Latest Drives</span>
+                <span className="flex items-center gap-1 rounded-full bg-[hsl(var(--mint))]/10 px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--mint))]">
+                  <span className="h-1 w-1 rounded-full bg-[hsl(var(--mint))]" /> Live
                 </span>
               </div>
-
-              {/* Job list */}
-              <div className="divide-y divide-border">
-                {latestDrives.slice(0, 4).map(drive => (
-                  <a key={drive.id} href={`/drives/${drive.id}`} className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-secondary/50">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-light text-xs font-bold text-primary">
+              <div className="space-y-1.5">
+                {latestDrives.slice(0, 3).map(drive => (
+                  <a key={drive.id} href={`/drives/${drive.id}`} className="flex items-center gap-2 rounded-lg p-1.5 transition-colors hover:bg-secondary/50">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary-light text-[10px] font-bold text-primary">
                       {drive.companyInitials}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground truncate">{drive.company}</p>
-                      <p className="text-xs text-muted-foreground truncate">{drive.roles[0]}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-foreground">{drive.company}</p>
+                      <p className="truncate text-[10px] text-muted-foreground">{drive.roles[0]}</p>
                     </div>
-                    <span className="text-xs text-muted-foreground shrink-0">Today</span>
                   </a>
                 ))}
               </div>
+            </motion.div>
 
-              {/* Widget footer */}
-              <div className="px-5 py-3 border-t border-border">
-                <a href="/drives" className="flex items-center justify-center gap-1 text-sm font-medium text-primary hover:underline">
-                  View All Walk-ins <ArrowRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </div>
-
-            {/* Decorative badge */}
-            <div className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-destructive text-xs font-bold text-destructive-foreground shadow-lg">
-              {latestDrives.length}
-            </div>
-          </motion.div>
+            {/* Floating stats card */}
+            <motion.div
+              className="absolute -right-2 top-4 z-20 rounded-xl border border-border bg-card/95 px-4 py-3 card-shadow backdrop-blur-sm md:right-0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <p className="text-lg font-extrabold text-foreground">50K+</p>
+              <p className="text-[10px] text-muted-foreground">Active Job Seekers</p>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
