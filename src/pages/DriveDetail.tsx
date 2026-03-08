@@ -69,7 +69,7 @@ const DriveDetail = () => {
         .from("drives")
         .select("*")
         .eq("id", id!)
-        .single();
+        .maybeSingle();
 
       if (data) {
         setDrive(data as DriveData);
