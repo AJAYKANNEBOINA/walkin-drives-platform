@@ -124,13 +124,11 @@ const Drives = () => {
           <>
             <p className="text-sm text-muted-foreground mb-6">
               {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
-              {activeFilters > 0 && <span className="ml-1 text-primary">({activeFilters} filter{activeFilters > 1 ? "s" : ""} active)</span>}
             </p>
 
             {filtered.length === 0 ? (
               <div className="text-center py-20">
-                <p className="text-muted-foreground mb-4">No drives found matching your criteria</p>
-                <Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button>
+                <p className="text-muted-foreground mb-4">No drives found matching your search</p>
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
