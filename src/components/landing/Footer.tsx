@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Footer = () => (
   <footer className="bg-navy text-[hsl(var(--navy-foreground))] py-16">
     <div className="container">
-      <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr]">
+      <div className="grid gap-8 sm:gap-12 md:grid-cols-[2fr_1fr_1fr]">
         {/* Brand */}
         <div>
           <div className="mb-4 flex items-center gap-2.5">
