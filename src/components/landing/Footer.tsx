@@ -1,4 +1,5 @@
 import { ArrowUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="bg-navy text-[hsl(var(--navy-foreground))] py-16">
