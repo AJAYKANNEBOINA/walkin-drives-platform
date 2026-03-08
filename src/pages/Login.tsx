@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,8 +10,8 @@ import WalkinsLogo from "@/components/WalkinsLogo";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = window.location;
-  const state = (history.state?.usr as { redirectTo?: string }) || {};
+  const location = useLocation();
+  const redirectTo = (location.state as { redirectTo?: string })?.redirectTo || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +26,7 @@ const Login = () => {
       toast.error(error.message);
     } else {
       toast.success("Logged in successfully!");
-      navigate(state.redirectTo || "/");
+      navigate(redirectTo);
     }
   };
 
