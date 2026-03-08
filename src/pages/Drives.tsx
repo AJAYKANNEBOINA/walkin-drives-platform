@@ -6,10 +6,8 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
-import { Search, MapPin, Calendar, Briefcase, ArrowRight, Filter, X } from "lucide-react";
+import { Search, MapPin, Calendar, Briefcase, ArrowRight } from "lucide-react";
 
 interface DriveItem {
   id: string;
