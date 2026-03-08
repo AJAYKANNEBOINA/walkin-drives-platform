@@ -79,30 +79,13 @@ const Drives = () => {
 
   const filtered = drives.filter((d) => {
     const q = search.toLowerCase();
-    const matchSearch = !search ||
+    return !search ||
       d.title.toLowerCase().includes(q) ||
       d.company.toLowerCase().includes(q) ||
       d.city.toLowerCase().includes(q) ||
       d.roles?.some((r) => r.toLowerCase().includes(q)) ||
       d.industry?.toLowerCase().includes(q);
-    const matchCity = cityFilter === "all" || d.city === cityFilter;
-    const matchDomain = domainFilter === "all" || d.industry === domainFilter;
-    const matchExp = expFilter === "all" || (() => {
-      const range = experienceRanges.find(r => r.label === expFilter);
-      if (!range) return true;
-      return (d.experience_min ?? 0) <= range.max && (d.experience_max ?? 0) >= range.min;
-    })();
-    return matchSearch && matchCity && matchDomain && matchExp;
   });
-
-  const activeFilters = [cityFilter, domainFilter, expFilter].filter(f => f !== "all").length;
-
-  const clearFilters = () => {
-    setCityFilter("all");
-    setDomainFilter("all");
-    setExpFilter("all");
-    setSearch("");
-  };
 
   return (
     <div className="min-h-screen bg-background">
