@@ -53,47 +53,43 @@ const Hero = () => {
               </span>
             </motion.div>
 
+            {/* Animated tagline - hero headline */}
             <motion.h1
-              className="mb-3 text-4xl font-extrabold leading-[1.1] text-foreground md:text-5xl lg:text-[3.5rem]"
+              className="mb-6 text-4xl font-extrabold leading-[1.05] text-foreground md:text-5xl lg:text-[3.75rem]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Walk-In Drives{" "}
-              <span className="text-gradient">Near You</span>
+              Let us make{" "}
+              <br className="hidden sm:block" />
+              <motion.span
+                className="relative inline-block"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.25 }}
+              >
+                <span className="relative z-10 bg-gradient-to-r from-primary via-[hsl(var(--purple))] to-[hsl(var(--mint))] bg-clip-text text-transparent">
+                  Your first move
+                </span>
+                <motion.span
+                  className="absolute -inset-1 -z-10 block rounded-lg bg-gradient-to-r from-primary/15 via-[hsl(var(--purple))]/10 to-[hsl(var(--mint))]/15 blur-sm"
+                  animate={{
+                    opacity: [0.5, 1, 0.5],
+                    scale: [1, 1.03, 1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </motion.span>
             </motion.h1>
 
-            {/* Animated tagline */}
             <motion.p
-              className="mb-5 text-xl font-bold text-foreground/80 md:text-2xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-            >
-              Let us make{" "}
-              <motion.span
-                className="inline-block text-gradient"
-                animate={{
-                  textShadow: [
-                    "0 0 8px hsl(217,91%,60%,0.3)",
-                    "0 0 20px hsl(217,91%,60%,0.6)",
-                    "0 0 8px hsl(217,91%,60%,0.3)",
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                Your first move
-              </motion.span>
-            </motion.p>
-
-            <motion.p
-              className="mb-8 max-w-lg text-base leading-relaxed text-muted-foreground"
+              className="mb-8 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Skip the endless applications. Find verified walk-in interviews happening{" "}
-              <strong className="text-foreground">right now</strong> in your city and get hired today.
+              No more waiting for callbacks. Discover verified walk-in interviews in your city,{" "}
+              <strong className="text-foreground">show up in person</strong>, and land your next opportunity — all in one day.
             </motion.p>
 
             <motion.div
