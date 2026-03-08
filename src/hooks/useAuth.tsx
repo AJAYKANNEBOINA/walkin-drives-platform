@@ -10,9 +10,15 @@ export function useAuth() {
   useEffect(() => {
     let mounted = true;
 
+    // Timeout fallback — don't block UI forever
+    const timeout = setTimeout(() => {
+      if (mounted) setLoading(false);
+    }, 3000);
+
     // Get initial session immediately
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!mounted) return;
+      clearTimeout(timeout);
       const currentUser = session?.user ?? null;
       setUser(currentUser);
       setLoading(false);
