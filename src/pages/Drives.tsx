@@ -169,7 +169,6 @@ const Drives = () => {
               </div>
             )}
           </>
-        )}
       </div>
 
       <Footer />
