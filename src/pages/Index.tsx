@@ -2,7 +2,6 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import StatsBar from "@/components/landing/StatsBar";
 import WalkinCards from "@/components/landing/WalkinCards";
-import CityMap from "@/components/landing/CityMap";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Features from "@/components/landing/Features";
 import ForEmployers from "@/components/landing/ForEmployers";
@@ -17,7 +16,6 @@ const Index = () => {
       <Hero />
       <StatsBar />
       <WalkinCards />
-      <CityMap />
       <HowItWorks />
       <Features />
       <ForEmployers />
