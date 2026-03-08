@@ -1,7 +1,5 @@
 import { drives } from "@/data/mockData";
 import { ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 const WalkinCards = () => (
@@ -18,55 +16,38 @@ const WalkinCards = () => (
         </a>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {drives.slice(0, 6).map((drive, i) => (
           <motion.div
             key={drive.id}
-            className="group flex flex-col rounded-2xl border border-border bg-card card-shadow transition-all duration-300 hover:card-shadow-hover hover:-translate-y-1"
+            className="group relative rounded-[1.25rem] border border-border bg-card p-7 card-shadow transition-all duration-300 hover:card-shadow-hover hover:-translate-y-1"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: i * 0.06 }}
           >
-            {/* Card header */}
-            <div className="flex items-start justify-between p-5 pb-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-light text-sm font-bold text-primary">
-                  {drive.companyInitials}
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-foreground">{drive.company}</p>
-                  <p className="text-xs text-muted-foreground">{drive.city}</p>
-                </div>
-              </div>
-              <div className="flex gap-1.5">
-                {drive.isVerified && (
-                  <Badge variant="outline" className="border-primary/20 bg-primary-light text-primary text-[10px]">Verified</Badge>
-                )}
-                {drive.status === "live" && (
-                  <Badge variant="outline" className="border-[hsl(var(--mint))]/30 bg-[hsl(var(--mint))]/10 text-[hsl(var(--mint))] text-[10px]">● Live</Badge>
-                )}
-              </div>
-            </div>
+            {/* Company label */}
+            <span className="mb-4 inline-block text-sm font-bold uppercase tracking-wide text-primary">
+              {drive.company}
+            </span>
 
-            {/* Card body */}
-            <div className="flex-1 px-5 pb-4">
-              <h3 className="mb-2 font-semibold text-foreground leading-snug">{drive.roles[0]}</h3>
-              <div className="mb-3 flex flex-wrap gap-1.5">
-                {drive.roles.slice(0, 3).map(r => (
-                  <span key={r} className="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">{r}</span>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">{drive.date} · {drive.startTime} – {drive.endTime}</p>
-            </div>
+            {/* Role / Title */}
+            <h3 className="mb-3 text-xl font-extrabold leading-tight text-foreground">
+              {drive.roles[0]}
+            </h3>
 
-            {/* Card footer */}
-            <div className="flex items-center justify-between border-t border-border px-5 py-3">
-              <span className="text-xs text-muted-foreground">{drive.registrationCount} RSVPs</span>
-              <Button size="sm" className="rounded-full gap-1 text-xs">
-                Apply Now <ArrowRight className="h-3 w-3" />
-              </Button>
-            </div>
+            {/* Skills / details */}
+            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+              {drive.roles.join(", ")} · {drive.city} · {drive.date}
+            </p>
+
+            {/* Gradient CTA button */}
+            <a
+              href={`/drives/${drive.id}`}
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary via-[hsl(var(--purple))] to-[hsl(var(--purple))] px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Apply Now
+            </a>
           </motion.div>
         ))}
       </div>
