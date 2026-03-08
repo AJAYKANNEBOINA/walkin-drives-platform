@@ -2,7 +2,7 @@ import { ArrowRight, Briefcase, CheckCircle, Zap, ShieldCheck } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { latestDrives } from "@/data/mockData";
-import heroWoman from "@/assets/hero-woman.png";
+import hero3dDoor from "@/assets/hero-3d-door.png";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
