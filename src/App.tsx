@@ -8,6 +8,7 @@ import DriveDetail from "./pages/DriveDetail";
 import Drives from "./pages/Drives";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import PostDrive from "./pages/PostDrive";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
