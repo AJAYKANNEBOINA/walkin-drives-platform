@@ -1,9 +1,10 @@
 import { ArrowUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="bg-navy text-[hsl(var(--navy-foreground))] py-16">
     <div className="container">
-      <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr]">
+      <div className="grid gap-8 sm:gap-12 md:grid-cols-[2fr_1fr_1fr]">
         {/* Brand */}
         <div>
           <div className="mb-4 flex items-center gap-2.5">
@@ -21,7 +22,7 @@ const Footer = () => (
         <div>
           <h4 className="mb-4 text-sm font-bold text-mint">Learn more</h4>
           <ul className="space-y-3 text-sm text-[hsl(var(--navy-foreground))]/60">
-            <li><a href="/drives" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">Browse Drives</a></li>
+            <li><Link to="/drives" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">Browse Drives</Link></li>
             <li><a href="#" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">How It Works</a></li>
             <li><a href="/employers" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">For Employers</a></li>
             <li><a href="#" className="transition-colors hover:text-[hsl(var(--navy-foreground))]">About Us</a></li>
