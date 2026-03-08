@@ -17,6 +17,7 @@ export function useAuth() {
 
     // Get initial session immediately
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log("[useAuth] getSession result:", session?.user?.email ?? "no session");
       if (!mounted) return;
       clearTimeout(timeout);
       const currentUser = session?.user ?? null;
