@@ -1,10 +1,9 @@
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
-import TrustedBy from "@/components/landing/TrustedBy";
-import ValueProps from "@/components/landing/ValueProps";
-import TodaysDrives from "@/components/landing/TodaysDrives";
-import LatestDrives from "@/components/landing/LatestDrives";
+import StatsBar from "@/components/landing/StatsBar";
+import WalkinCards from "@/components/landing/WalkinCards";
 import HowItWorks from "@/components/landing/HowItWorks";
+import Features from "@/components/landing/Features";
 import ForEmployers from "@/components/landing/ForEmployers";
 import FAQ from "@/components/landing/FAQ";
 import FinalCTA from "@/components/landing/FinalCTA";
@@ -15,11 +14,10 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <TrustedBy />
-      <ValueProps />
-      <TodaysDrives />
-      <LatestDrives />
+      <StatsBar />
+      <WalkinCards />
       <HowItWorks />
+      <Features />
       <ForEmployers />
       <FAQ />
       <FinalCTA />
