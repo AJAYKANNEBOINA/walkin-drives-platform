@@ -338,7 +338,7 @@ const DriveDetail = () => {
                   </div>
                 </div>
 
-                <Button className="w-full rounded-full font-semibold" size="lg">
+                <Button className="w-full rounded-full font-semibold" size="lg" onClick={handleApply}>
                   RSVP / Register Now
                 </Button>
                 <Button variant="outline" className="mt-2 w-full rounded-full gap-2" size="lg">

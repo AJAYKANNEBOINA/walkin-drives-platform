@@ -63,7 +63,7 @@ const Navbar = () => {
                   <Link to="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full">Login</Button>
                   </Link>
-                  <Link to="/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Link to="/drives" className="flex-1" onClick={() => setMobileOpen(false)}>
                     <Button size="sm" className="w-full rounded-full bg-mint text-mint-foreground hover:bg-mint/90">Get Started</Button>
                   </Link>
                 </>
