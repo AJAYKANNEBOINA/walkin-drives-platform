@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Check, X, Upload, Sparkles, LogOut, ArrowLeft, Users, FileText, Mail } from "lucide-react";
+import WalkinsLogo from "@/components/WalkinsLogo";
 
 interface DriveRow {
   id: string;
