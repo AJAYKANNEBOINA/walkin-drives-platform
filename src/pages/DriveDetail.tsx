@@ -14,6 +14,18 @@ import {
 
 const DriveDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const drive = drives.find(d => d.id === id);
+
+  const handleApply = () => {
+    if (!user) {
+      toast.info("Please login to apply for this drive");
+      navigate("/login", { state: { redirectTo: `/drives/${id}` } });
+    } else {
+      toast.success("RSVP submitted successfully!");
+    }
+  };
   const drive = drives.find(d => d.id === id);
 
   if (!drive) {
