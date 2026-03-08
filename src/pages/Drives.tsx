@@ -101,9 +101,7 @@ const Drives = () => {
 
       <div className="container py-8">
 
-        {loading ? (
-          <div className="text-center py-20 text-muted-foreground">Loading drives...</div>
-        ) : (
+        {filtered.length === 0 ? (
           <>
             <p className="text-sm text-muted-foreground mb-6">
               {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
