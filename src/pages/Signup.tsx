@@ -25,20 +25,25 @@ const Signup = () => {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName, phone, city },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Account created! Check your email to confirm.");
-      navigate("/login");
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName, phone, city },
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Account created! Check your email to confirm.");
+        navigate("/login");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
