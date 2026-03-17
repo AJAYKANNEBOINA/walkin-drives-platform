@@ -28,13 +28,18 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Logged in successfully!");
-      navigate(redirectTo);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Logged in successfully!");
+        navigate(redirectTo);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
