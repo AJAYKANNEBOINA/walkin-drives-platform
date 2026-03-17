@@ -13,28 +13,37 @@ interface DriveCard {
   date: string;
 }
 
+const fallbackDrives: DriveCard[] = mockDrives.slice(0, 6).map((d) => ({
+  id: d.id,
+  company: d.company,
+  title: d.title,
+  roles: d.roles,
+  city: d.city,
+  date: d.date,
+}));
+
 const WalkinCards = () => {
-  const [drives, setDrives] = useState<DriveCard[]>([]);
+  const [drives, setDrives] = useState<DriveCard[]>(fallbackDrives);
 
   useEffect(() => {
     const fetchDrives = async () => {
-      const { data } = await supabase
-        .from("drives")
-        .select("id, company, title, roles, city, date")
-        .eq("approval_status", "approved")
-        .order("date", { ascending: true })
-        .limit(6);
+      try {
+        const { data, error } = await supabase
+          .from("drives")
+          .select("id, company, title, roles, city, date")
+          .eq("approval_status", "approved")
+          .order("date", { ascending: true })
+          .limit(6);
 
-      if (data && data.length > 0) {
-        setDrives(data);
-      } else {
-        // Fallback to mock data if no approved drives yet
-        setDrives(mockDrives.slice(0, 6).map((d) => ({
-          id: d.id, company: d.company, title: d.title,
-          roles: d.roles, city: d.city, date: d.date,
-        })));
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setDrives(data);
+        }
+      } catch {
+        setDrives(fallbackDrives);
       }
     };
+
     fetchDrives();
   }, []);
 
