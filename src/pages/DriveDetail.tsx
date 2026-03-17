@@ -64,81 +64,126 @@ const DriveDetail = () => {
   useEffect(() => {
     const fetchDrive = async () => {
       setLoading(true);
-      // Try database first
-      const { data } = await supabase
-        .from("drives")
-        .select("*")
-        .eq("id", id!)
-        .maybeSingle();
+      setNotFound(false);
 
-      if (data) {
-        setDrive(data as DriveData);
-        // Fetch similar drives
-        const { data: similar } = await supabase
+      try {
+        const { data, error } = await supabase
           .from("drives")
           .select("*")
-          .eq("city", data.city)
-          .eq("approval_status", "approved")
-          .neq("id", data.id)
-          .limit(3);
-        setSimilarDrives((similar || []) as DriveData[]);
-      } else {
-        // Fallback to mock data
-        const mockDrive = mockDrives.find(d => d.id === id);
-        if (mockDrive) {
-          setDrive({
-            id: mockDrive.id,
-            title: mockDrive.title,
-            company: mockDrive.company,
-            company_initials: mockDrive.companyInitials,
-            company_about: mockDrive.companyAbout,
-            company_address: mockDrive.companyAddress,
-            city: mockDrive.city,
-            date: mockDrive.date,
-            start_time: mockDrive.startTime,
-            end_time: mockDrive.endTime,
-            venue_name: mockDrive.venueName,
-            venue_address: mockDrive.venueAddress,
-            roles: mockDrive.roles,
-            salary_min: mockDrive.salaryMin,
-            salary_max: mockDrive.salaryMax,
-            experience_min: mockDrive.experienceMin,
-            experience_max: mockDrive.experienceMax,
-            openings: mockDrive.openings,
-            registration_count: mockDrive.registrationCount,
-            is_verified: mockDrive.isVerified,
-            is_featured: mockDrive.isFeatured,
-            status: mockDrive.status,
-            rating: mockDrive.rating,
-            review_count: mockDrive.reviewCount,
-            job_description: mockDrive.jobDescription,
-            specifications: mockDrive.specifications,
-            documents_required: mockDrive.documentsRequired,
-            key_skills: mockDrive.keySkills,
-            industry: mockDrive.industry,
-            department: mockDrive.department,
-            employment_type: mockDrive.employmentType,
-            education: mockDrive.education,
-            eligibility: null,
-          });
-          const similar = mockDrives.filter(d => d.city === mockDrive.city && d.id !== mockDrive.id).slice(0, 3);
-          setSimilarDrives(similar.map(d => ({
-            id: d.id, title: d.title, company: d.company, company_initials: d.companyInitials,
-            company_about: null, company_address: null, city: d.city, date: d.date,
-            start_time: null, end_time: null, venue_name: null, venue_address: null,
-            roles: d.roles, salary_min: null, salary_max: null, experience_min: null,
-            experience_max: null, openings: null, registration_count: null, is_verified: null,
-            is_featured: null, status: null, rating: null, review_count: null,
-            job_description: null, specifications: null, documents_required: null,
-            key_skills: null, industry: null, department: null, employment_type: null,
-            education: null, eligibility: null,
-          })));
-        } else {
-          setNotFound(true);
+          .eq("id", id!)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+          setDrive(data as DriveData);
+
+          const { data: similar, error: similarError } = await supabase
+            .from("drives")
+            .select("*")
+            .eq("city", data.city)
+            .eq("approval_status", "approved")
+            .neq("id", data.id)
+            .limit(3);
+
+          if (!similarError) {
+            setSimilarDrives((similar || []) as DriveData[]);
+          }
+          setLoading(false);
+          return;
         }
+      } catch {
+        // Fall back to mock data below when backend fetch fails.
       }
+
+      const mockDrive = mockDrives.find((d) => d.id === id);
+      if (mockDrive) {
+        setDrive({
+          id: mockDrive.id,
+          title: mockDrive.title,
+          company: mockDrive.company,
+          company_initials: mockDrive.companyInitials,
+          company_about: mockDrive.companyAbout,
+          company_address: mockDrive.companyAddress,
+          city: mockDrive.city,
+          date: mockDrive.date,
+          start_time: mockDrive.startTime,
+          end_time: mockDrive.endTime,
+          venue_name: mockDrive.venueName,
+          venue_address: mockDrive.venueAddress,
+          roles: mockDrive.roles,
+          salary_min: mockDrive.salaryMin,
+          salary_max: mockDrive.salaryMax,
+          experience_min: mockDrive.experienceMin,
+          experience_max: mockDrive.experienceMax,
+          openings: mockDrive.openings,
+          registration_count: mockDrive.registrationCount,
+          is_verified: mockDrive.isVerified,
+          is_featured: mockDrive.isFeatured,
+          status: mockDrive.status,
+          rating: mockDrive.rating,
+          review_count: mockDrive.reviewCount,
+          job_description: mockDrive.jobDescription,
+          specifications: mockDrive.specifications,
+          documents_required: mockDrive.documentsRequired,
+          key_skills: mockDrive.keySkills,
+          industry: mockDrive.industry,
+          department: mockDrive.department,
+          employment_type: mockDrive.employmentType,
+          education: mockDrive.education,
+          eligibility: mockDrive.eligibility,
+        });
+
+        const similar = mockDrives
+          .filter((d) => d.city === mockDrive.city && d.id !== mockDrive.id)
+          .slice(0, 3);
+
+        setSimilarDrives(
+          similar.map((d) => ({
+            id: d.id,
+            title: d.title,
+            company: d.company,
+            company_initials: d.companyInitials,
+            company_about: null,
+            company_address: null,
+            city: d.city,
+            date: d.date,
+            start_time: null,
+            end_time: null,
+            venue_name: null,
+            venue_address: null,
+            roles: d.roles,
+            salary_min: null,
+            salary_max: null,
+            experience_min: null,
+            experience_max: null,
+            openings: null,
+            registration_count: null,
+            is_verified: null,
+            is_featured: null,
+            status: null,
+            rating: null,
+            review_count: null,
+            job_description: null,
+            specifications: null,
+            documents_required: null,
+            key_skills: null,
+            industry: null,
+            department: null,
+            employment_type: null,
+            education: null,
+            eligibility: null,
+          }))
+        );
+      } else {
+        setDrive(null);
+        setSimilarDrives([]);
+        setNotFound(true);
+      }
+
       setLoading(false);
     };
+
     if (id) fetchDrive();
   }, [id]);
 
