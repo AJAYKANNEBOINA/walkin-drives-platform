@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { motion } from "framer-motion";
 
 const faqs = [
   { q: "What is a walk-in drive?", a: "A walk-in drive is a recruitment event where candidates can directly visit the company's venue for an interview — no prior online application needed. Just bring your documents and walk in." },
@@ -15,13 +16,19 @@ const faqs = [
 ];
 
 const FAQ = () => (
-  <section id="faq" className="py-20">
+  <section id="faq" className="py-24 sm:py-32 bg-secondary/30">
     <div className="container">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-10 text-center">
-          <h2 className="mb-3 text-3xl font-bold text-foreground">Frequently Asked Questions</h2>
-          <p className="text-muted-foreground">Everything you need to know about WALKINS.</p>
-        </div>
+        <motion.div
+          className="mb-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="mb-4 text-3xl sm:text-4xl font-extrabold text-foreground">Frequently Asked Questions</h2>
+          <p className="text-base sm:text-lg text-muted-foreground">Everything you need to know about WALKINS.</p>
+        </motion.div>
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((f, i) => (
             <AccordionItem key={i} value={`item-${i}`} className="rounded-xl border border-border bg-card px-5">

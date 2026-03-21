@@ -9,13 +9,29 @@ const steps = [
 ];
 
 const HowItWorks = () => (
-  <section className="bg-secondary/30 py-20">
+  <section id="how-it-works" className="py-24 sm:py-32">
     <div className="container">
-      <div className="mx-auto mb-14 max-w-xl text-center">
-        <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">Simple 4-Step Process</span>
-        <h2 className="mb-3 text-3xl font-extrabold text-foreground">How It Works</h2>
-        <p className="text-muted-foreground">From search to job offer in record time. No complex applications, just show up and shine.</p>
+      <div className="mx-auto mb-16 max-w-xl text-center">
+        <motion.h2
+          className="mb-4 text-3xl sm:text-4xl font-extrabold text-foreground"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          How It Works
+        </motion.h2>
+        <motion.p
+          className="text-muted-foreground text-base sm:text-lg"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          Four simple steps to land your next opportunity
+        </motion.p>
       </div>
+
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         {steps.map((s, i) => (
           <motion.div
@@ -24,10 +40,10 @@ const HowItWorks = () => (
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: i * 0.12 }}
+            transition={{ duration: 0.4, delay: i * 0.1 }}
           >
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
-              <s.icon className="h-7 w-7 text-primary-foreground" />
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-light">
+              <s.icon className="h-6 w-6 text-primary" />
             </div>
             <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-primary">{s.step}</span>
             <h3 className="mb-2 text-lg font-bold text-foreground">{s.title}</h3>
