@@ -1,9 +1,8 @@
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
-import StatsBar from "@/components/landing/StatsBar";
-import WalkinCards from "@/components/landing/WalkinCards";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Features from "@/components/landing/Features";
+import WalkinCards from "@/components/landing/WalkinCards";
 import ForEmployers from "@/components/landing/ForEmployers";
 import FAQ from "@/components/landing/FAQ";
 import FinalCTA from "@/components/landing/FinalCTA";
@@ -14,10 +13,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <StatsBar />
-      <WalkinCards />
       <HowItWorks />
       <Features />
+      <WalkinCards />
       <ForEmployers />
       <FAQ />
       <FinalCTA />
