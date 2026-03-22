@@ -7,6 +7,7 @@ import Footer from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
+import { mergeWithFallback } from "@/lib/driveFallback";
 
 interface DriveItem {
   id: string;
@@ -53,6 +54,11 @@ const toMockDriveItems = (mockDrives: any[]): DriveItem[] =>
 
 const fallbackDrives = toMockDriveItems(mockDrives);
 
+const getDriveKey = (drive: DriveItem) =>
+  [drive.company, drive.title, drive.city, drive.date]
+    .map((value) => value.trim().toLowerCase())
+    .join("::");
+
 const Drives = () => {
   const [drives, setDrives] = useState<DriveItem[]>(fallbackDrives);
   const [search, setSearch] = useState("");
@@ -67,9 +73,7 @@ const Drives = () => {
           .order("date", { ascending: true });
 
         if (error) throw error;
-        if (data && data.length > 0) {
-          setDrives(data);
-        }
+        setDrives(mergeWithFallback(data ?? [], fallbackDrives, fallbackDrives.length, getDriveKey));
       } catch {
         setDrives(fallbackDrives);
       }
