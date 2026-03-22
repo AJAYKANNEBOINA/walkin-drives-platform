@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { drives as mockDrives } from "@/data/mockData";
+import { mergeWithFallback } from "@/lib/driveFallback";
 
 interface DriveCard {
   id: string;
@@ -22,6 +23,11 @@ const fallbackDrives: DriveCard[] = mockDrives.slice(0, 6).map((d) => ({
   date: d.date,
 }));
 
+const getDriveKey = (drive: DriveCard) =>
+  [drive.company, drive.title, drive.city, drive.date]
+    .map((value) => value.trim().toLowerCase())
+    .join("::");
+
 const WalkinCards = () => {
   const [drives, setDrives] = useState<DriveCard[]>(fallbackDrives);
 
@@ -36,9 +42,7 @@ const WalkinCards = () => {
           .limit(6);
 
         if (error) throw error;
-        if (data && data.length > 0) {
-          setDrives(data);
-        }
+        setDrives(mergeWithFallback(data ?? [], fallbackDrives, fallbackDrives.length, getDriveKey));
       } catch {
         setDrives(fallbackDrives);
       }
