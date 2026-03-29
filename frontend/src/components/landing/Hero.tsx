@@ -1,11 +1,27 @@
 import { ArrowRight, Briefcase, CheckCircle, Zap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { latestDrives } from "@/data/mockData";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import heroWoman from "@/assets/hero-woman.png";
 import { Link } from "react-router-dom";
 
+interface LatestDrive {
+  id: string;
+  company: string;
+  company_initials: string | null;
+  roles: string[] | null;
+  title: string;
+}
+
 const Hero = () => {
+  const [latestDrives, setLatestDrives] = useState<LatestDrive[]>([]);
+
+  useEffect(() => {
+    api.getDrives({ limit: "3" }).then(r => {
+      setLatestDrives((r.drives || []).slice(0, 3));
+    }).catch(() => {});
+  }, []);
   return (
     <section className="relative overflow-hidden">
       {/* Animated glowing orbs */}
@@ -109,14 +125,14 @@ const Hero = () => {
                 </span>
               </div>
               <div className="space-y-1">
-                {latestDrives.slice(0, 3).map(drive => (
+                {latestDrives.map(drive => (
                   <Link key={drive.id} to={`/drives/${drive.id}`} className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-secondary/50">
                     <div className="flex h-6 w-6 md:h-7 md:w-7 shrink-0 items-center justify-center rounded-md bg-primary-light text-[9px] md:text-[10px] font-bold text-primary">
-                      {drive.companyInitials}
+                      {drive.company_initials || drive.company?.slice(0,2).toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[10px] md:text-xs font-semibold text-foreground">{drive.company}</p>
-                      <p className="truncate text-[9px] md:text-[10px] text-muted-foreground">{drive.roles[0]}</p>
+                      <p className="truncate text-[9px] md:text-[10px] text-muted-foreground">{drive.roles?.[0] || drive.title}</p>
                     </div>
                   </Link>
                 ))}

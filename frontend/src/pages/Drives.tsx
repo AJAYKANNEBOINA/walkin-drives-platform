@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { drives as mockDrives } from "@/data/mockData";
+import { api } from "@/lib/api";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { mergeWithFallback } from "@/lib/driveFallback";
+import { Search, MapPin, Filter, X } from "lucide-react";
 
 interface DriveItem {
   id: string;
@@ -29,68 +29,63 @@ interface DriveItem {
 
 const formatSalary = (n: number | null) => {
   if (!n) return "";
-  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-  return `₹${(n / 1000).toFixed(0)}K`;
+  if (n >= 100000) return `${(n / 100000).toFixed(1)}L`;
+  return `${(n / 1000).toFixed(0)}K`;
 };
 
-const toMockDriveItems = (mockDrives: any[]): DriveItem[] =>
-  mockDrives.map((d) => ({
-    id: d.id,
-    title: d.title,
-    company: d.company,
-    company_initials: d.companyInitials,
-    city: d.city,
-    date: d.date,
-    roles: d.roles,
-    salary_min: d.salaryMin,
-    salary_max: d.salaryMax,
-    experience_min: d.experienceMin,
-    experience_max: d.experienceMax,
-    status: d.status,
-    is_verified: d.isVerified,
-    openings: d.openings,
-    industry: d.industry,
-  }));
+const formatDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+};
 
-const fallbackDrives = toMockDriveItems(mockDrives);
-
-const getDriveKey = (drive: DriveItem) =>
-  [drive.company, drive.title, drive.city, drive.date]
-    .map((value) => value.trim().toLowerCase())
-    .join("::");
+const CITIES = ["All", "Hyderabad", "Bangalore", "Chennai", "Pune", "Mumbai", "Delhi NCR", "Kolkata", "Ahmedabad", "Jaipur", "Kochi"];
+const INDUSTRIES = ["All", "IT Services", "BPO / BPM", "Customer Support", "Product / SaaS", "Consulting", "Data & Analytics"];
 
 const Drives = () => {
-  const [drives, setDrives] = useState<DriveItem[]>(fallbackDrives);
+  const [drives, setDrives] = useState<DriveItem[]>([]);
   const [search, setSearch] = useState("");
+  const [selectedCity, setSelectedCity] = useState("All");
+  const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const fetchDrives = async () => {
+    setLoading(true);
+    try {
+      const params: Record<string, string> = {};
+      if (selectedCity !== "All") params.city = selectedCity;
+      if (selectedIndustry !== "All") params.industry = selectedIndustry;
+      if (search) params.search = search;
+
+      const result = await api.getDrives(params);
+      setDrives(result.drives || []);
+    } catch {
+      setDrives([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDrives = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("drives")
-          .select("id, title, company, company_initials, city, date, roles, salary_min, salary_max, experience_min, experience_max, status, is_verified, openings, industry")
-          .eq("approval_status", "approved")
-          .order("date", { ascending: true });
-
-        if (error) throw error;
-        setDrives(mergeWithFallback(data ?? [], fallbackDrives, fallbackDrives.length, getDriveKey));
-      } catch {
-        setDrives(fallbackDrives);
-      }
-    };
-
     fetchDrives();
-  }, []);
+  }, [selectedCity, selectedIndustry]);
 
-  const filtered = drives.filter((d) => {
-    const q = search.toLowerCase();
-    return !search ||
-      d.title.toLowerCase().includes(q) ||
-      d.company.toLowerCase().includes(q) ||
-      d.city.toLowerCase().includes(q) ||
-      d.roles?.some((r) => r.toLowerCase().includes(q)) ||
-      d.industry?.toLowerCase().includes(q);
-  });
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchDrives();
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setSelectedCity("All");
+    setSelectedIndustry("All");
+  };
+
+  const hasActiveFilters = selectedCity !== "All" || selectedIndustry !== "All" || search !== "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,31 +102,122 @@ const Drives = () => {
           </p>
 
           {/* Search */}
-          <div className="mx-auto max-w-2xl">
-            <div className="relative">
-              <Input
-                placeholder="Search by company, role, city, domain..."
-                className="h-12 rounded-xl border-0 bg-background/95 pl-11 text-sm"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <form onSubmit={handleSearch} className="mx-auto max-w-2xl">
+            <div className="relative flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by company, role, city, skills..."
+                  className="h-12 rounded-xl border-0 bg-background/95 pl-10 text-sm"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <Button type="submit" className="h-12 rounded-xl px-6">Search</Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-12 rounded-xl bg-background/95 border-0"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter className="h-4 w-4" />
+              </Button>
             </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Filters */}
+      {showFilters && (
+        <div className="border-b bg-card">
+          <div className="container py-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-foreground">Filters</h3>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
+                  <X className="h-3 w-3 mr-1" /> Clear All
+                </Button>
+              )}
+            </div>
+
+            {/* City Filter */}
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> City
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {CITIES.map(city => (
+                  <Button
+                    key={city}
+                    variant={selectedCity === city ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full text-xs h-8"
+                    onClick={() => setSelectedCity(city)}
+                  >
+                    {city}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Industry Filter */}
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-2">Industry</p>
+              <div className="flex flex-wrap gap-2">
+                {INDUSTRIES.map(ind => (
+                  <Button
+                    key={ind}
+                    variant={selectedIndustry === ind ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full text-xs h-8"
+                    onClick={() => setSelectedIndustry(ind)}
+                  >
+                    {ind}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* City Tabs (always visible) */}
+      <div className="border-b bg-card/50">
+        <div className="container py-3 overflow-x-auto">
+          <div className="flex gap-2 min-w-max">
+            {CITIES.map(city => (
+              <Button
+                key={city}
+                variant={selectedCity === city ? "default" : "ghost"}
+                size="sm"
+                className={`rounded-full text-xs h-7 ${selectedCity === city ? '' : 'text-muted-foreground'}`}
+                onClick={() => setSelectedCity(city)}
+              >
+                {city}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="container py-8">
         <p className="mb-6 text-sm text-muted-foreground">
-          {filtered.length} drive{filtered.length !== 1 ? "s" : ""} found
+          {loading ? "Loading..." : `${drives.length} drive${drives.length !== 1 ? "s" : ""} found`}
+          {hasActiveFilters && !loading && (
+            <button onClick={clearFilters} className="ml-2 text-primary hover:underline text-xs">
+              Clear filters
+            </button>
+          )}
         </p>
 
-        {filtered.length === 0 ? (
+        {!loading && drives.length === 0 ? (
           <div className="py-20 text-center">
             <p className="mb-4 text-muted-foreground">No drives found matching your search</p>
+            <Button variant="outline" onClick={clearFilters}>Clear Filters</Button>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((drive, i) => (
+            {drives.map((drive, i) => (
               <motion.div
                 key={drive.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -155,23 +241,24 @@ const Drives = () => {
                     </h3>
 
                     <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-                      {drive.roles?.join(", ")} · {drive.city} · {drive.date}
+                      {drive.roles?.join(", ")} &middot; {drive.city} &middot; {formatDate(drive.date)}
                     </p>
 
                     {(drive.salary_min || drive.salary_max) && (
                       <p className="mb-5 text-xs font-semibold text-foreground">
-                        {formatSalary(drive.salary_min)} – {formatSalary(drive.salary_max)} P.A.
-                        {drive.openings && <span className="ml-2 font-normal text-muted-foreground">· {drive.openings} openings</span>}
+                        &#8377;{formatSalary(drive.salary_min)} &ndash; &#8377;{formatSalary(drive.salary_max)} P.A.
+                        {drive.openings && <span className="ml-2 font-normal text-muted-foreground">&middot; {drive.openings} openings</span>}
                       </p>
                     )}
 
                     <div className="mb-5 flex items-center gap-2">
                       {drive.is_verified && <Badge variant="outline" className="border-primary/20 text-[10px] text-primary">Verified</Badge>}
-                      {drive.status === "live" && <Badge variant="outline" className="border-[hsl(var(--mint))]/30 text-[10px] text-[hsl(var(--mint))]">● Live</Badge>}
+                      {drive.status === "live" && <Badge variant="outline" className="border-[hsl(var(--mint))]/30 text-[10px] text-[hsl(var(--mint))]">Live</Badge>}
+                      {drive.status === "upcoming" && <Badge variant="outline" className="border-blue-200 text-[10px] text-blue-600">Upcoming</Badge>}
                     </div>
 
                     <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary via-[hsl(var(--purple))] to-[hsl(var(--purple))] px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity group-hover:opacity-90">
-                      Apply Now
+                      View Details
                     </span>
                   </div>
                 </Link>

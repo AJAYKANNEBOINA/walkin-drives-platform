@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bell, Mail, ShieldCheck, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 const FinalCTA = () => {
@@ -15,17 +15,14 @@ const FinalCTA = () => {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("email_subscribers").insert({ email: email.trim().toLowerCase() });
-    setLoading(false);
-    if (error) {
-      if (error.code === "23505") {
-        toast.info("You're already subscribed!");
-      } else {
-        toast.error("Something went wrong. Try again.");
-      }
-    } else {
-      toast.success("Subscribed! You'll get alerts for new drives.");
+    try {
+      const result = await api.subscribe(email.trim().toLowerCase());
+      toast.success(result.message || "Subscribed!");
       setEmail("");
+    } catch {
+      toast.error("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 

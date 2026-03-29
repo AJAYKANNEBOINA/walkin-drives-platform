@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { drives as mockDrives } from "@/data/mockData";
-import { mergeWithFallback } from "@/lib/driveFallback";
+import { api } from "@/lib/api";
 
 interface DriveCard {
   id: string;
@@ -14,42 +12,55 @@ interface DriveCard {
   date: string;
 }
 
-const fallbackDrives: DriveCard[] = mockDrives.slice(0, 6).map((d) => ({
-  id: d.id,
-  company: d.company,
-  title: d.title,
-  roles: d.roles,
-  city: d.city,
-  date: d.date,
-}));
-
-const getDriveKey = (drive: DriveCard) =>
-  [drive.company, drive.title, drive.city, drive.date]
-    .map((value) => value.trim().toLowerCase())
-    .join("::");
+const formatDate = (dateStr: string) => {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+};
 
 const WalkinCards = () => {
-  const [drives, setDrives] = useState<DriveCard[]>(fallbackDrives);
+  const [drives, setDrives] = useState<DriveCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDrives = async () => {
       try {
-        const { data, error } = await supabase
-          .from("drives")
-          .select("id, company, title, roles, city, date")
-          .eq("approval_status", "approved")
-          .order("date", { ascending: true })
-          .limit(6);
-
-        if (error) throw error;
-        setDrives(mergeWithFallback(data ?? [], fallbackDrives, fallbackDrives.length, getDriveKey));
+        const result = await api.getDrives({ limit: "6" });
+        setDrives((result.drives || []).slice(0, 6));
       } catch {
-        setDrives(fallbackDrives);
+        setDrives([]);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchDrives();
   }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20">
+        <div className="container">
+          <div className="mb-10">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-primary">Walk-in Opportunities</span>
+            <h2 className="text-3xl font-extrabold text-foreground">Today's Walk-in Drives</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1,2,3].map(i => (
+              <div key={i} className="rounded-[1.25rem] border border-border bg-card p-7 animate-pulse">
+                <div className="h-4 w-20 bg-muted rounded mb-4" />
+                <div className="h-6 w-3/4 bg-muted rounded mb-3" />
+                <div className="h-4 w-full bg-muted rounded mb-6" />
+                <div className="h-10 w-32 bg-muted rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20">
@@ -82,7 +93,7 @@ const WalkinCards = () => {
                 {drive.roles?.[0] || drive.title}
               </h3>
               <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-                {drive.roles?.join(", ")} · {drive.city} · {drive.date}
+                {drive.roles?.join(", ")} &middot; {drive.city} &middot; {formatDate(drive.date)}
               </p>
               <a
                 href={`/drives/${drive.id}`}
