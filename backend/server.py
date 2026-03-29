@@ -15,10 +15,13 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Supabase config
-SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://lieymuvftztftprrkzsv.supabase.co')
+SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
 SUPABASE_SERVICE_KEY = os.environ.get('SUPABASE_SERVICE_KEY', '')
 SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+
+if not SUPABASE_URL or not SUPABASE_SERVICE_KEY or not SUPABASE_ANON_KEY:
+    logger.warning("Missing Supabase environment variables! Check backend/.env")
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -390,10 +393,10 @@ async def subscribe_email(data: EmailSubscribe):
 # ─── Admin Routes ──────────────────────────────────────────
 @api_router.get("/admin/drives")
 async def admin_get_drives(user=Depends(verify_admin)):
-    """Get all drives for admin."""
+    """Get all drives for admin (paginated)."""
     async with httpx.AsyncClient() as client:
         resp = await client.get(
-            f"{SUPABASE_URL}/rest/v1/drives?select=*&order=created_at.desc",
+            f"{SUPABASE_URL}/rest/v1/drives?select=*&order=created_at.desc&limit=200",
             headers=supabase_headers(service_role=True)
         )
         return resp.json() if resp.status_code in [200, 206] else []
