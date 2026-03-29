@@ -43,9 +43,9 @@ const Login = () => {
       {/* Left side - Branding */}
       <div className="hidden w-1/2 hero-gradient lg:flex lg:flex-col lg:items-center lg:justify-center lg:p-12">
         <Link to="/">
-          <WalkinsLogo className="h-16 w-auto text-primary-foreground mb-6" />
+          <WalkinsLogo className="h-16 w-auto" variant="white" showText={false} />
         </Link>
-        <h2 className="text-2xl font-bold text-primary-foreground text-center mb-2">
+        <h2 className="text-2xl font-bold text-primary-foreground text-center mb-2 mt-6">
           India's First Walk-in Drive Platform
         </h2>
         <p className="text-primary-foreground/70 text-center max-w-md">
@@ -58,7 +58,7 @@ const Login = () => {
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center lg:hidden">
             <Link to="/">
-              <WalkinsLogo className="h-10 w-auto text-foreground mx-auto mb-3" compact />
+              <WalkinsLogo className="h-10 w-auto mx-auto mb-3" showText={true} />
             </Link>
           </div>
 

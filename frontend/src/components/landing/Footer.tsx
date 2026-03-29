@@ -8,7 +8,7 @@ const Footer = () => (
       <div className="grid gap-8 sm:gap-12 md:grid-cols-[2fr_1fr_1fr]">
         <div>
           <div className="mb-4">
-            <WalkinsLogo className="h-12 w-auto text-[hsl(var(--navy-foreground))]" />
+            <WalkinsLogo className="h-12 w-auto" variant="white" showText={true} />
           </div>
           <p className="max-w-md text-sm leading-relaxed text-[hsl(var(--navy-foreground))]/60">
             WALKINS is India's #1 walk-in drive platform. We connect job seekers with verified, venue-based walk-in interviews across 50+ cities.

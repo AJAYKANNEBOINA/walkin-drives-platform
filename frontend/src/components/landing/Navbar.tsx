@@ -14,8 +14,7 @@ const Navbar = () => {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-10">
           <Link to="/" className="flex items-center">
-            <WalkinsLogo className="h-10 w-auto text-foreground" compact />
-            <span className="ml-2 text-xl font-extrabold tracking-tight text-foreground">WALKINS</span>
+            <WalkinsLogo className="h-10 w-auto" showText={true} />
           </Link>
           <nav className="hidden items-center gap-8 lg:flex">
             <Link to="/drives" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">Drives</Link>
