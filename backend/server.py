@@ -168,6 +168,152 @@ class EmailSubscribe(BaseModel):
     email: str
 
 
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    full_name: Optional[str] = None
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+# ─── Custom Auth Routes (using Resend for emails) ──────────
+@api_router.post("/auth/signup")
+async def custom_signup(data: SignupRequest, background_tasks: BackgroundTasks):
+    """Custom signup: creates user with auto-confirm + sends welcome email via Resend."""
+    if len(data.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    async with httpx.AsyncClient() as client:
+        # Create user via Supabase Admin API (auto-confirmed)
+        resp = await client.post(
+            f"{SUPABASE_URL}/auth/v1/admin/users",
+            headers={
+                "apikey": SUPABASE_SERVICE_KEY,
+                "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "email": data.email,
+                "password": data.password,
+                "email_confirm": True,
+                "user_metadata": {"full_name": data.full_name or ""}
+            }
+        )
+        
+        if resp.status_code not in [200, 201]:
+            error_data = resp.json()
+            msg = error_data.get("msg", error_data.get("message", "Signup failed"))
+            if "already been registered" in str(msg).lower() or "already exists" in str(msg).lower():
+                raise HTTPException(status_code=409, detail="An account with this email already exists. Please login instead.")
+            raise HTTPException(status_code=400, detail=str(msg))
+        
+        user = resp.json()
+        
+        # Assign 'user' role
+        await client.post(
+            f"{SUPABASE_URL}/rest/v1/user_roles",
+            headers={**supabase_headers(service_role=True), "Prefer": "return=minimal"},
+            json={"user_id": user["id"], "role": "user"}
+        )
+        
+        # Now log the user in to get a session token
+        login_resp = await client.post(
+            f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
+            headers={
+                "apikey": SUPABASE_ANON_KEY,
+                "Content-Type": "application/json"
+            },
+            json={"email": data.email, "password": data.password}
+        )
+        
+        session = login_resp.json() if login_resp.status_code == 200 else None
+        
+        # Send welcome email via Resend
+        background_tasks.add_task(send_welcome_email, data.email, data.full_name or "User")
+        
+        return {
+            "message": "Account created successfully!",
+            "user": {"id": user["id"], "email": user["email"]},
+            "session": session
+        }
+
+
+@api_router.post("/auth/login")
+async def custom_login(data: LoginRequest):
+    """Login via Supabase Auth."""
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{SUPABASE_URL}/auth/v1/token?grant_type=password",
+            headers={
+                "apikey": SUPABASE_ANON_KEY,
+                "Content-Type": "application/json"
+            },
+            json={"email": data.email, "password": data.password}
+        )
+        
+        if resp.status_code != 200:
+            error_data = resp.json()
+            msg = error_data.get("error_description", error_data.get("msg", "Invalid credentials"))
+            raise HTTPException(status_code=401, detail=str(msg))
+        
+        return resp.json()
+
+
+async def send_welcome_email(email: str, name: str):
+    """Send welcome/verification email via Resend."""
+    if not RESEND_API_KEY:
+        logger.warning("RESEND_API_KEY not set, skipping welcome email")
+        return
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {RESEND_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": "WALKINS <onboarding@resend.dev>",
+                    "to": [email],
+                    "subject": "Welcome to WALKINS - India's First Walk-in Drive Platform!",
+                    "html": f"""
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background: linear-gradient(135deg, #4F46E5, #7C3AED); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+                            <h1 style="color: white; margin: 0; font-size: 28px;">WALKINS</h1>
+                            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 14px;">Walk In. Interview. Get Hired.</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 12px 12px;">
+                            <h2 style="color: #1a1a1a; margin-top: 0;">Welcome, {name}! 🎉</h2>
+                            <p style="color: #666; line-height: 1.6;">Your WALKINS account has been created successfully. You can now:</p>
+                            <ul style="color: #666; line-height: 2;">
+                                <li>Browse verified walk-in drives across India</li>
+                                <li>Apply to drives with a single click</li>
+                                <li>Get notified about new walk-ins in your city</li>
+                            </ul>
+                            <div style="text-align: center; margin: 25px 0;">
+                                <a href="https://walkindrives.in/drives" style="display: inline-block; background: #4F46E5; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">Browse Walk-in Drives</a>
+                            </div>
+                            <p style="color: #999; font-size: 12px; margin-top: 30px; text-align: center;">
+                                WALKINS - India's First Walk-in Drive Platform<br/>
+                                One Nation. One Platform.
+                            </p>
+                        </div>
+                    </div>
+                    """
+                }
+            )
+            if resp.status_code in [200, 201]:
+                logger.info(f"Welcome email sent to {email}")
+            else:
+                logger.error(f"Welcome email failed: {resp.status_code} - {resp.text}")
+    except Exception as e:
+        logger.error(f"Welcome email error: {e}")
+
+
 @api_router.get("/check-admin")
 async def check_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Check if the current user is an admin."""

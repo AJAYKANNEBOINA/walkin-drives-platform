@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import WalkinsLogo from "@/components/WalkinsLogo";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock, User, CheckCircle2 } from "lucide-react";
+
+const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL || '';
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -25,22 +27,33 @@ const Signup = () => {
     }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/login`
-        },
+      // Use our custom backend signup (auto-confirms + sends Resend email)
+      const resp = await fetch(`${BACKEND_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, full_name: fullName })
       });
-      if (error) {
-        toast.error(error.message);
-      } else {
-        setSignedUp(true);
-        toast.success("Account created! Please check your email to verify.");
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        toast.error(data.detail || "Signup failed");
+        setLoading(false);
+        return;
       }
+
+      // If we got a session back, set it in Supabase client
+      if (data.session?.access_token) {
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token
+        });
+      }
+
+      setSignedUp(true);
+      toast.success("Account created! Check your email for a welcome message.");
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -52,19 +65,24 @@ const Signup = () => {
         <div className="w-full max-w-sm text-center">
           <WalkinsLogo className="h-10 w-auto mx-auto mb-6" showText={true} />
           <div className="rounded-2xl border border-border bg-card p-8">
-            <div className="mb-4 h-16 w-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-              <Mail className="h-8 w-8 text-primary" />
+            <div className="mb-4 h-16 w-16 mx-auto rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle2 className="h-8 w-8 text-green-600" />
             </div>
-            <h1 className="mb-2 text-xl font-bold text-foreground">Check your email</h1>
-            <p className="mb-4 text-sm text-muted-foreground">
-              We've sent a verification link to <strong className="text-foreground">{email}</strong>. Click the link to verify your account.
+            <h1 className="mb-2 text-xl font-bold text-foreground">Account Created!</h1>
+            <p className="mb-2 text-sm text-muted-foreground">
+              Welcome to WALKINS! Your account is ready to use.
             </p>
-            <p className="text-xs text-muted-foreground mb-6">
-              Didn't receive it? Check your spam folder or try signing up again.
+            <p className="mb-6 text-xs text-muted-foreground">
+              We've sent a welcome email to <strong className="text-foreground">{email}</strong>. Check your inbox (and spam folder).
             </p>
-            <Link to="/login">
-              <Button variant="outline" className="rounded-xl">Go to Login</Button>
-            </Link>
+            <div className="space-y-3">
+              <Button className="w-full rounded-xl" onClick={() => navigate("/drives")}>
+                Browse Walk-in Drives
+              </Button>
+              <Link to="/login">
+                <Button variant="outline" className="w-full rounded-xl">Go to Login</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
