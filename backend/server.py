@@ -238,7 +238,7 @@ async def get_drives(
             headers=headers
         )
         
-        drives = resp.json() if resp.status_code == 200 else []
+        drives = resp.json() if resp.status_code in [200, 206] else []
         
         # Client-side search filter (PostgREST doesn't support OR across multiple columns easily)
         if search:
@@ -274,7 +274,7 @@ async def get_drive(drive_id: str):
             f"{SUPABASE_URL}/rest/v1/drives?id=eq.{drive_id}&select=*",
             headers=supabase_headers(service_role=True)
         )
-        drives = resp.json() if resp.status_code == 200 else []
+        drives = resp.json() if resp.status_code in [200, 206] else []
         if not drives:
             raise HTTPException(status_code=404, detail="Drive not found")
         return drives[0]
@@ -289,7 +289,7 @@ async def get_similar_drives(drive_id: str, limit: int = 3):
             f"{SUPABASE_URL}/rest/v1/drives?id=eq.{drive_id}&select=city",
             headers=supabase_headers(service_role=True)
         )
-        drives = resp.json() if resp.status_code == 200 else []
+        drives = resp.json() if resp.status_code in [200, 206] else []
         if not drives:
             return []
         
@@ -309,7 +309,7 @@ async def get_cities():
             f"{SUPABASE_URL}/rest/v1/drives?approval_status=eq.approved&select=city",
             headers=supabase_headers(service_role=True)
         )
-        drives = resp.json() if resp.status_code == 200 else []
+        drives = resp.json() if resp.status_code in [200, 206] else []
         city_counts = {}
         for d in drives:
             c = d['city']
@@ -328,7 +328,7 @@ async def submit_application(app_data: ApplicationCreate, background_tasks: Back
             f"{SUPABASE_URL}/rest/v1/drives?id=eq.{app_data.drive_id}&select=id,title,company,city,date",
             headers=supabase_headers(service_role=True)
         )
-        drives = resp.json() if resp.status_code == 200 else []
+        drives = resp.json() if resp.status_code in [200, 206] else []
         if not drives:
             raise HTTPException(status_code=404, detail="Drive not found")
         
@@ -396,7 +396,7 @@ async def admin_get_drives(user=Depends(verify_admin)):
             f"{SUPABASE_URL}/rest/v1/drives?select=*&order=created_at.desc",
             headers=supabase_headers(service_role=True)
         )
-        return resp.json() if resp.status_code == 200 else []
+        return resp.json() if resp.status_code in [200, 206] else []
 
 
 @api_router.post("/admin/drives")
@@ -434,7 +434,7 @@ async def admin_update_drive(drive_id: str, drive: DriveUpdate, user=Depends(ver
             headers={**supabase_headers(service_role=True), "Prefer": "return=representation"},
             json=update_data
         )
-        if resp.status_code == 200:
+        if resp.status_code in [200, 206]:
             result = resp.json()
             if result:
                 return result[0]
@@ -464,7 +464,7 @@ async def admin_get_applications(drive_id: Optional[str] = None, user=Depends(ve
             url += f"&drive_id=eq.{drive_id}"
         
         resp = await client.get(url, headers=supabase_headers(service_role=True))
-        return resp.json() if resp.status_code == 200 else []
+        return resp.json() if resp.status_code in [200, 206] else []
 
 
 @api_router.get("/admin/subscribers")
@@ -475,7 +475,7 @@ async def admin_get_subscribers(user=Depends(verify_admin)):
             f"{SUPABASE_URL}/rest/v1/email_subscribers?select=*&order=subscribed_at.desc",
             headers=supabase_headers(service_role=True)
         )
-        return resp.json() if resp.status_code == 200 else []
+        return resp.json() if resp.status_code in [200, 206] else []
 
 
 @api_router.get("/admin/stats")
@@ -526,7 +526,7 @@ async def admin_approve_drive(drive_id: str, user=Depends(verify_admin)):
             headers={**supabase_headers(service_role=True), "Prefer": "return=minimal"},
             json={"approval_status": "approved", "is_verified": True}
         )
-        if resp.status_code == 200:
+        if resp.status_code in [200, 206]:
             return {"message": "Drive approved"}
         raise HTTPException(status_code=500, detail="Failed to approve")
 
@@ -540,7 +540,7 @@ async def admin_reject_drive(drive_id: str, user=Depends(verify_admin)):
             headers={**supabase_headers(service_role=True), "Prefer": "return=minimal"},
             json={"approval_status": "rejected"}
         )
-        if resp.status_code == 200:
+        if resp.status_code in [200, 206]:
             return {"message": "Drive rejected"}
         raise HTTPException(status_code=500, detail="Failed to reject")
 
@@ -556,7 +556,7 @@ async def cleanup_expired_drives(user=Depends(verify_admin)):
             f"{SUPABASE_URL}/rest/v1/drives?date=lt.{today}&status=neq.completed&approval_status=eq.approved&select=id,title,company,date",
             headers=supabase_headers(service_role=True)
         )
-        expired = resp.json() if resp.status_code == 200 else []
+        expired = resp.json() if resp.status_code in [200, 206] else []
         
         count = 0
         for drive in expired:
