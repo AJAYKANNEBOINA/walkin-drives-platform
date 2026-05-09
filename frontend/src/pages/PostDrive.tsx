@@ -220,7 +220,55 @@ const PostDrive = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Company Info */}
+          {/* AI Image Upload */}
+          <section className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20 p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-bold text-foreground">Auto-fill from Image</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Upload a job posting image (poster, screenshot, or flyer) and we'll extract the details automatically.
+            </p>
+
+            {imagePreview ? (
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Drive poster preview" className="max-h-48 rounded-lg border" />
+                <button
+                  type="button"
+                  onClick={() => setImagePreview(null)}
+                  className="absolute -top-2 -right-2 bg-background border rounded-full p-1 shadow hover:bg-muted"
+                  aria-label="Remove image"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer hover:bg-primary/5 transition-colors">
+                {extracting ? (
+                  <>
+                    <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
+                    <p className="text-sm font-medium text-foreground">Extracting details...</p>
+                    <p className="text-xs text-muted-foreground">This may take a few seconds</p>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-8 w-8 text-primary mb-2" />
+                    <p className="text-sm font-medium text-foreground">Click to upload an image</p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={extracting}
+                />
+              </label>
+            )}
+          </section>
+
+
           <section className="bg-card rounded-xl border p-6 space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="h-5 w-5 text-primary" />
