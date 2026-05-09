@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Building2, MapPin, Calendar, Clock, Users, Briefcase, GraduationCap, IndianRupee } from "lucide-react";
+import { ArrowLeft, Send, Building2, MapPin, Calendar, Clock, Users, Briefcase, GraduationCap, IndianRupee, Upload, Sparkles, Loader2, X } from "lucide-react";
 import WalkinsLogo from "@/components/WalkinsLogo";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
