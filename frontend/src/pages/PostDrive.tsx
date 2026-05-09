@@ -71,6 +71,77 @@ const PostDrive = () => {
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be smaller than 10MB");
+      return;
+    }
+
+    setExtracting(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      setImagePreview(base64);
+
+      const { data, error } = await supabase.functions.invoke("extract-drive-from-image", {
+        body: { image: base64 },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      const ex = data?.extracted ?? {};
+      const arrToStr = (v: any) => Array.isArray(v) ? v.join(", ") : (v ?? "");
+      const str = (v: any) => (v === null || v === undefined ? "" : String(v));
+
+      setForm(prev => ({
+        ...prev,
+        title: str(ex.title) || prev.title,
+        company: str(ex.company) || prev.company,
+        city: cities.includes(ex.city) ? ex.city : prev.city,
+        date: str(ex.date) || prev.date,
+        startTime: str(ex.start_time) || prev.startTime,
+        endTime: str(ex.end_time) || prev.endTime,
+        venueName: str(ex.venue_name) || prev.venueName,
+        venueAddress: str(ex.venue_address) || prev.venueAddress,
+        roles: arrToStr(ex.roles) || prev.roles,
+        eligibility: str(ex.eligibility) || prev.eligibility,
+        salaryMin: str(ex.salary_min) || prev.salaryMin,
+        salaryMax: str(ex.salary_max) || prev.salaryMax,
+        experienceMin: str(ex.experience_min) || prev.experienceMin,
+        experienceMax: str(ex.experience_max) || prev.experienceMax,
+        documentsRequired: arrToStr(ex.documents_required) || prev.documentsRequired,
+        openings: str(ex.openings) || prev.openings,
+        industry: industries.includes(ex.industry) ? ex.industry : prev.industry,
+        department: str(ex.department) || prev.department,
+        employmentType: employmentTypes.includes(ex.employment_type) ? ex.employment_type : prev.employmentType,
+        education: str(ex.education) || prev.education,
+        keySkills: arrToStr(ex.key_skills) || prev.keySkills,
+        jobDescription: str(ex.job_description) || prev.jobDescription,
+        specifications: arrToStr(ex.specifications) || prev.specifications,
+      }));
+
+      toast.success("Drive details extracted! Please review and edit before submitting.");
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Failed to extract details from image");
+    } finally {
+      setExtracting(false);
+      e.target.value = "";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
