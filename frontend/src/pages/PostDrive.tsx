@@ -30,6 +30,8 @@ const PostDrive = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [extracting, setExtracting] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
